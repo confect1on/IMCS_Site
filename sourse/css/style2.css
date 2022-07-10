@@ -1,0 +1,123 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Raleway:wght@300;400&family=Roboto:wght@300;500&display=swap');
+
+*,*::before,*::after{
+    box-sizing: border-box;
+}
+
+body{
+    margin: 0;
+    background-color: #F5F5F5;
+}
+
+
+.container{
+    width: 1280px;
+    margin: 0 auto;
+    font-family: 'Roboto', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    background-color: #202328;
+}
+
+
+.logo__image{
+    width: 50px;
+    height: 50px;   
+    margin-top: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-bottom: 10px; 
+}
+
+
+.name__SibFU{
+    color: #EC4A24;
+    text-decoration: none;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 40px;   
+}
+
+.header__wrapper{
+    height: 70px;
+    display: flex;
+    align-items: center;    
+}
+
+.login__button{
+    display:flex;
+    flex-direction: row;
+    
+    align-items: center;
+    padding: 10px 12px;    
+    margin-right: 10px;
+
+    background: #EC4A24;
+    border-radius: 5px 0px;
+    margin-left: 770px;   
+}
+
+
+.login__button__text{
+    color: #fff;
+    text-decoration: none;      
+}
+
+.secondHead{    
+    width: 1280;
+    height: 30px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    background-color: #6E686F;
+    margin: 0 auto;    
+    padding: 0;
+    gap: 50px;
+    flex-direction: row;
+}
+
+.nav{
+    margin: auto;       
+}
+
+.nav__link{
+    margin-right: 50px;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;    
+}
+
+.nav__link:last-child{
+    margin-right: 0px;
+}
+
+.nav__link.active{
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 5px 0px;
+    padding: 1px 10px;
+    gap: 10px;
+    margin-right: 50px;    
+}
+
+/* HEADER END */
+
+/* Block start */
+.useful__links{
+    background-color: #F5F5F5;
+    width: 1280px;
+    height: 365px;
+    margin:auto;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+
+
+
+
+
+    
+
+
+/* block end */

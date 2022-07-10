@@ -1,0 +1,89 @@
+@import "cssReset.scss";
+
+//Полезные ссылки
+
+.useful__links {}
+.container2 {
+    background-color: #F5F5F5;
+    width: 100%;
+}
+.columns__title {}
+.title {
+	text-align: left;
+	padding: 30px 0 30px 75px;
+	font-size: 18px;
+}
+.columns__row {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.columns__column {
+	width: 200px;
+	height: 200px;
+	background-color: grey;
+	border-radius: 20px 0;
+	box-shadow: 0 4px 4px  black ;
+}
+
+.columns__item {
+}
+.item {
+}
+.item__row {
+	display: flex;
+}
+.item__body {
+	flex: 1 1 auto;
+	margin: 20% auto;
+	text-align: center;
+}
+.item__image {
+	flex: 0 0 200px;
+}
+.item__text {}
+
+//О нас
+
+.about_us{
+	width: 1280px;
+	height: 500px;
+	background-color: rgba(255, 255, 255, 0.3);
+	margin:auto;
+	font-family: 'Montserrat', sans-serif;
+	font-size: 16px;
+	font-weight: 500;
+}
+
+.about_us {}
+.container3 {}
+.about_us__title {}
+.about_us__row {
+	display: flex;
+}
+.about_us__image {
+	margin: 0px 50px;
+}
+
+.about_us__body {
+	flex: 1 1 auto;
+	margin-left: 75px;
+}
+.about_us__text {
+}
+.about_us__button {
+	margin: 0 auto;
+	width: 175px;
+	padding: 10px 12px;
+	margin-right: 10px;
+	background: #EC4A24;
+	border-radius: 5px 0px;
+	text-align: center;
+	margin-top: 5px;
+}
+
+.read_more {
+	color: white;
+}
+
