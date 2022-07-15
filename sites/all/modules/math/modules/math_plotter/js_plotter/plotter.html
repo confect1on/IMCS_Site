@@ -1,0 +1,47 @@
+<html>
+<head>
+   <title>js_plotter</title>
+	<link rel='stylesheet' type='text/css' href='plotter.css' />
+	<script src='../../../../../../../misc/jquery.js' type='text/javascript'></script>
+	<script src='../../math_calc/js_expression_evaluator/parser.js' type='text/javascript'></script>
+	<script src='../../math_calc/js_cmd/cmd.js' type='text/javascript'></script>
+	<script src='plotter.js' type='text/javascript'></script>
+</head>
+
+<body>
+
+<input type='text' size='60' id='cmd' /> <input type='button' value='Plot' id='cmd-button' />
+
+<br />
+<canvas width='500' height='500'></canvas>
+
+<div id="cmd-history">
+   <a href="#" id="cmd-clear-history">Clear history</a>
+</div>
+
+<!--
+<table>
+   <tr><th>(x1,y1)=</th><td><input id="x1" size="3" value="-30" /><input id="y1" size="3" value="-30" /></td></tr>
+   <tr><th>(x2,y2)=</th><td><input id="x2" size="3" value="30" /><input id="y2" size="3" value="30" /></td></tr>
+</table>
+-->
+
+<script type='text/javascript'>
+$("#cmd").cmd({
+   handler: function(formula) {
+      $("canvas").plot({
+         func: formula
+         //x1: $("#x1"),
+         //x2: $("#x2"),
+         //y1: $("#y1"),
+         //y2: $("#y2")
+      });
+   },
+   history: $("#cmd-history"),
+   clear_history: $("#cmd-clear-history"),
+   button: $("#cmd-button")
+});
+</script>
+
+</body>
+</html>

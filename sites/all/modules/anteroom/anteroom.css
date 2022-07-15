@@ -1,0 +1,23 @@
+.node-anteroom div.comment {
+	margin-bottom: 10px;
+	padding: 5px;
+}
+.node-anteroom div.comment h3.title {
+	display: none;
+}
+.node-anteroom div.comment-published {
+	background-color: #f8fff7;
+	border: 1px solid #aca;
+}
+.node-anteroom div.answer div.comment-published {
+	background: none !important;
+	border: none;
+}
+div.indented.answer {
+	margin-left: 15px;
+	padding-left: 10px;
+	background: url(arrow.gif) top left no-repeat;
+}
+.node-anteroom fieldset legend {
+	font-weight: bold;
+}

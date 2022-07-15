@@ -1,0 +1,218 @@
+# $Id$
+#
+# Russian translation of Drupal (general)
+# Copyright YEAR NAME <EMAIL@ADDRESS>
+# Generated from files:
+#  math.module: n/a
+#  math.info: n/a
+#  modules/math_calc/math_calc.info: n/a
+#  modules/math_plotter/math_plotter.info: n/a
+#  modules/math_wolfram_alpha/math_wolfram_alpha.info: n/a
+#  modules/math_calc/math_calc.module: n/a
+#  modules/math_wolfram_alpha/math_wolfram_alpha.module: n/a
+#  modules/math_plotter/math_plotter.module: n/a
+#  modules/math_plotter/math_plotter.js: n/a
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: math\n"
+"POT-Creation-Date: 2010-11-28 16:23+0700\n"
+"PO-Revision-Date: 2010-11-28 16:23+0700\n"
+"Language-Team: Russian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: math.module:29
+msgid "access math services"
+msgstr "доступ к математическими сервисам"
+
+#: math.module:34
+msgid "Math services"
+msgstr "Математические сервисы"
+
+#: modules/math_calc/math_calc.module:68
+msgid "Clear history"
+msgstr "Очистить историю"
+
+#: modules/math_calc/math_calc.module:110
+msgid "Operator / Function"
+msgstr "Оператор / Функция"
+
+#: modules/math_calc/math_calc.module:110 modules/math_wolfram_alpha/math_wolfram_alpha.module:58
+msgid "Description"
+msgstr "Описание"
+
+#: modules/math_calc/math_calc.module:111
+msgid "Exponentiation"
+msgstr "Возведение в степень"
+
+#: modules/math_calc/math_calc.module:112
+msgid "Multiplication"
+msgstr "Умножение"
+
+#: modules/math_calc/math_calc.module:113
+msgid "Division"
+msgstr "Деление"
+
+#: modules/math_calc/math_calc.module:114
+msgid "Remainder"
+msgstr "Остаток от деления"
+
+#: modules/math_calc/math_calc.module:115
+msgid "Addition"
+msgstr "Сложение"
+
+#: modules/math_calc/math_calc.module:116
+msgid "Subtraction"
+msgstr "Вычитание"
+
+#: modules/math_calc/math_calc.module:119
+msgid "Assign value to variable x"
+msgstr "Присвоить значение переменной x"
+
+#: modules/math_calc/math_calc.module:121
+msgid "Sine of x (x is in radians)"
+msgstr "Синус x (x в радианах)"
+
+#: modules/math_calc/math_calc.module:122
+msgid "Cosine of x"
+msgstr "Косинус x"
+
+#: modules/math_calc/math_calc.module:123
+msgid "Tangent of x"
+msgstr "Тангенс x"
+
+#: modules/math_calc/math_calc.module:124
+msgid "Arc sine of x (in radians)"
+msgstr "Арксинус x (в радианах)"
+
+#: modules/math_calc/math_calc.module:125
+msgid "Arc cosine of x"
+msgstr "Арккосинус x"
+
+#: modules/math_calc/math_calc.module:126
+msgid "Arc tangent of x"
+msgstr "Арктангенс x"
+
+#: modules/math_calc/math_calc.module:127
+msgid "Square root of x"
+msgstr "Квадратный корень x"
+
+#: modules/math_calc/math_calc.module:128
+msgid "Natural logarithm of x"
+msgstr "Натуральный логарифм x"
+
+#: modules/math_calc/math_calc.module:129
+msgid "Absolute value (magnitude) of x"
+msgstr "Модуль x"
+
+#: modules/math_calc/math_calc.module:130
+msgid "Ceiling of x — the smallest integer that's >= x"
+msgstr "Округление до целого в большую сторону"
+
+#: modules/math_calc/math_calc.module:131
+msgid "Floor of x — the largest integer that's <= x"
+msgstr "Округление до целого в меньшую сторону"
+
+#: modules/math_calc/math_calc.module:132
+msgid "x, rounded to the nearest integer"
+msgstr "Округление до ближайшего целого"
+
+#: modules/math_calc/math_calc.module:133
+msgid "e^x (exponential function with base e)"
+msgstr "e^x (степенная функция с основанием e)"
+
+#: modules/math_calc/math_calc.module:134
+msgid "Random number in the range [0, n)"
+msgstr "Случайное число в диапазоне [0, n)"
+
+#: modules/math_calc/math_calc.module:135
+msgid "n! (factorial of n)"
+msgstr "n! (факториал n)"
+
+#: modules/math_calc/math_calc.module:136
+msgid "Get the smallest (\"minimum\") number in the list"
+msgstr "Наименьшее число из списка (минимум)"
+
+#: modules/math_calc/math_calc.module:137
+msgid "Get the largest (\"maximum\") number in the list"
+msgstr "Наиболее число из списка (максимум)"
+
+#: modules/math_calc/math_calc.module:139
+msgid "This is exactly the same as \"x^y\""
+msgstr "Тоже самое, что x^y"
+
+#: modules/math_calc/math_calc.module:140
+msgid "Arc tangent of x/y, i.e. the angle between (0, 0) and (x, y) in radians"
+msgstr "Арктангенс x/y, т. е. угол между вектором (x, y) и осью абсцисс в радианах"
+
+#: modules/math_calc/math_calc.module:5
+msgid "Calculator"
+msgstr "Калькулятор"
+
+#: modules/math_calc/math_calc.module:11 modules/math_plotter/math_plotter.module:11 modules/math_wolfram_alpha/math_wolfram_alpha.module:11
+msgid "View"
+msgstr "Просмотр"
+
+#: modules/math_calc/math_calc.module:16 modules/math_plotter/math_plotter.module:16 modules/math_wolfram_alpha/math_wolfram_alpha.module:16
+msgid "Help"
+msgstr "Справка"
+
+#: modules/math_plotter/math_plotter.module:59
+msgid "Examples"
+msgstr "Примеры"
+
+#: modules/math_plotter/math_plotter.module:5
+msgid "Plotter"
+msgstr "Построение графиков"
+
+#: modules/math_plotter/math_plotter.js:0
+msgid "Your browser is not supported."
+msgstr "Ваш браузер не поддерживается."
+
+#: modules/math_wolfram_alpha/math_wolfram_alpha.module:57
+msgid "<a href=\"http://www.wolframalpha.com/\">Wolfram|Alpha</a> — online computational knowledge engine."
+msgstr "<a href=\"http://www.wolframalpha.com/\">Wolfram|Alpha</a> — онлайн база знаний и набор вычислительных алгоритмов."
+
+#: modules/math_wolfram_alpha/math_wolfram_alpha.module:58
+msgid "Example"
+msgstr "Пример"
+
+#: modules/math_wolfram_alpha/math_wolfram_alpha.module:59
+msgid "Pi with 1000 digits after comma"
+msgstr "Число Пи с точностью 1000 знаков после запятой"
+
+#: modules/math_wolfram_alpha/math_wolfram_alpha.module:60
+msgid "Plot a region"
+msgstr "Визуализация области"
+
+#: modules/math_wolfram_alpha/math_wolfram_alpha.module:61
+msgid "3D plot a function"
+msgstr "Трёхмерный график функции"
+
+#: modules/math_wolfram_alpha/math_wolfram_alpha.module:62
+msgid "Solve an ordinary differential equation"
+msgstr "Решение обыкновенного дифференциального уравнения"
+
+#: modules/math_wolfram_alpha/math_wolfram_alpha.module:63
+msgid "Compute an integral"
+msgstr "Вычисление интеграла"
+
+#: modules/math_wolfram_alpha/math_wolfram_alpha.module:64
+msgid "Calculate a derivative"
+msgstr "Вычисление производной"
+
+#: modules/math_wolfram_alpha/math_wolfram_alpha.module:66
+msgid "See also <a href=\"http://www.wolframalpha.com/examples/Math.html\">other examples</a> on Wolfram|Alpha site."
+msgstr "Смотрите также <a href=\"http://www.wolframalpha.com/examples/Math.html\">другие примеры</a> на сайте Wolfram|Alpha."
+
+msgid "Calculate"
+msgstr "Вычислить"
+
+msgid "Plot"
+msgstr "Построить график"
+
+msgid "Solve an equation with parameters"
+msgstr "Решение уравнения с параметрами"

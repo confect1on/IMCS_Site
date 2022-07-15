@@ -1,0 +1,48 @@
+/* task node */
+
+.task {margin-top: 0.7em;}
+
+.task-label {font-weight: bold; white-space: nowrap;}
+.task-value {margin-right: 1em; white-space: nowrap;}
+
+.task-task {background: #F3F1F1; padding: 0.4em 1em;}
+
+.task .links {display: block !important; margin-top: 1em;}
+
+.task-solved {float: right; background: #8CD9B3; padding: 0.1em 0.6em;}
+.task-solve {float: right;}
+
+.task-meta {padding: 0.4em 1em 0.6em 1em; background: #F3F1F1; margin-bottom: 1em; font-size: 11px;}
+.task-meta table, .task-meta td {margin: 0; padding: 0;}
+
+.task h3 {background: #D9DFE5; padding: 3px 6px;}
+.task .content {margin-top: 0 !important;}
+
+.node-unpublished .task-task, .node-unpublished .task-meta {background: #FFF4F4;}
+
+/* task answer form */
+
+#tasks-attempt-form .form-submit {margin-top: 0;}
+#tasks-attempt-form {margin-top: 2em;}
+
+/* rating */
+
+.tasks-self td {background: #8CD9B3;}
+
+/* admin */
+
+#tasks-admin-form .form-submit {
+	margin: 0;
+}
+
+/* block */
+
+.block-tasks h2 {
+	margin-bottom: 0.5em;
+}
+
+.block-tasks li, .block-tasks ul {
+	list-style-type: none;
+	margin: 0.5em 0 0 0;
+	padding: 0;
+}

@@ -1,0 +1,249 @@
+<?php
+
+//////////////////////////////////////////// config ////////////////////////////////////////////
+
+global $CAS_CLIENT_CONFIG;
+include_once('cas_client.config.inc');
+
+function _cas_client_config($var) {
+	return $GLOBALS['CAS_CLIENT_CONFIG'][$var];
+}
+
+function _cas_client_is_external_user($uid) {
+	$module = db_result(db_query("select module from {authmap} where uid=%d", $uid));
+	return $module == 'cas_client';
+}
+
+//////////////////////////////////////////// login ////////////////////////////////////////////
+
+function cas_client_menu() {
+	$items['cas/login'] = array(
+		'title'              => 'Вход',
+		'page callback'      => '_cas_client_login',
+		'access callback'    => 'user_is_anonymous',
+		'type'               => MENU_NORMAL_ITEM,
+	);
+	return $items;
+}
+
+function _cas_client_return($path = '') {
+	$destination = $_SESSION['cas_client_destination'];
+	unset($_SESSION['cas_client_destination']);
+	drupal_goto($destination == '' ? $path : $destination);
+}
+
+function _cas_client_remember_destination() {
+	$referer = $_SERVER['HTTP_REFERER'];
+	$base = url('', array('absolute' => TRUE));
+	$_SESSION['cas_client_destination'] = substr($referer, 0, strlen($base)) == $base ? $referer : NULL;
+}
+
+function _cas_client_login() {
+	global $user;
+	if ($user->uid) {
+		drupal_set_message("Вы уже идентифицированы как «" . $user->name . "».", 'warn');
+		_cas_client_return();
+	}
+	$service = url('cas/login', array('absolute' => TRUE));
+	$ticket = $_REQUEST['ticket'];
+	if ($ticket == '') {
+	    _cas_client_remember_destination();
+		drupal_goto(_cas_client_config('server') . 'login', 'service=' . urlencode($service) . (_cas_client_config('renew') ? '&renew=true' : ''));
+	} else {
+		_cas_client_login_by_ticket($service, $ticket);
+		_cas_client_return();
+	}
+}
+
+function _cas_client_login_by_ticket($service, $ticket) {
+	$response = drupal_http_request($url=_cas_client_config('server') . "validate?service=" . urlencode($service) . "&ticket=" . urlencode($ticket) . (_cas_client_config('renew') ? '&renew=true' : ''));
+	//drupal_set_message($url);
+	$profile = _cas_client_parse_validate_response($response);
+	//drupal_set_message('<pre>'.print_r($response,1).'</pre>');
+	if (empty($profile) || _cas_client_config('uid_required') && !is_numeric($profile->uid)) {
+		drupal_set_message('Идентификация не удалась.', 'error');
+		return;
+	}
+	eval('$authname="' . _cas_client_config('authname_format') . '";');
+	$user = user_external_load($authname);
+	if (!$user->uid && user_load(array('name' => $profile->name))) {
+		drupal_set_message("Пользователь «" . $profile->name . "» уже зарегистрирован на сайте. Вход возможен только по локальному имени и паролю.", 'error');
+		drupal_goto('user');
+	}
+	$userinfo = _cas_client_profile2userinfo($profile, !$user->uid, $authname, $user);
+	$user = user_save($user, $userinfo);
+	if ($user->uid && user_external_login($user)) {
+		drupal_set_message('Идентификация успешно выполнена.');
+	} else {
+		drupal_set_message('Идентификация не удалась.', 'error');
+	}
+}
+
+function _cas_client_profile2userinfo($profile, $new, $authname, $_user) {
+	$user['access'] = time();
+	if ($new) {
+		$user['name'] = $profile->name;
+		$user['pass'] = user_password();
+		eval('$user["mail"]="' . _cas_client_config('mail_format') . '";');
+		$user['init'] = $user['mail'] == '' ? $profile->name : $user['mail'];
+		$user['status'] = 1;
+		$user['authname_cas_client'] = $authname;
+		$fields = _cas_client_config('profile_fields');
+		foreach ($fields as $field => $user_field) {
+			if (isset($profile->$field)) {
+				$user[$user_field] = $profile->$field;
+			}
+		}
+		$rids = _cas_client_config('profile_roles');
+		$roles = explode(",", $profile->roles);
+		foreach ($roles as $role) {
+			$rid = $rids[$role = trim($role)];
+			if ($rid) {
+				$user['roles'][$rid] = $role;
+			}
+		}
+	} else {
+		$fields = _cas_client_config('profile_fields');
+		$fields_update = _cas_client_config('profile_fields_update');
+		foreach ($fields_update as $field) {
+			if ($field == 'name') {
+				$user['name'] = $profile->name;
+			}
+			elseif ($field == 'mail') {
+				eval('$user["mail"]="' . _cas_client_config('mail_format') . '";');
+			}
+			else {
+				$user_field = $fields[$field];
+				$user[$user_field] = $profile->$field;
+			}
+		}
+		$rids = _cas_client_config('profile_roles');
+		$roles_update = _cas_client_config('profile_roles_update');
+		$user['roles'] = $_user->roles;
+		foreach ($roles_update as $role) {
+			$rid = $rids[$role];
+			unset($user['roles'][$rid]);
+		}
+		$roles = explode(",", $profile->roles);
+		foreach ($roles as $role) {
+			$rid = $rids[$role = trim($role)];
+			if ($rid && in_array($role, $roles_update)) {
+				$user['roles'][$rid] = $role;
+			}
+		}
+	}
+	return $user;
+}
+
+function _cas_client_parse_validate_response($response) {
+	$data = explode("\n", $response->data);
+	if ($response->code != 200 ||  count($data) < 2 || $data[0] != 'yes') {
+		return FALSE;
+	}
+	$profile->name = $data[1];
+	for ($i = 2; $i < count($data); $i++) {
+		list($key, $value) = explode("=", $data[$i], 2);
+		if ($key != '') {
+			$profile->$key = urldecode($value);
+		}
+	}
+	return $profile;
+}
+
+//////////////////////////////////////////// logout ////////////////////////////////////////////
+
+function cas_client_user($op, &$edit, &$account, $category = NULL) {
+	global $user;
+	if ($op == 'logout' && _cas_client_config('auto_logout') && _cas_client_is_external_user($user->uid)) {
+		drupal_goto(_cas_client_config('server') . 'logout', "url=" . ($_SERVER['HTTP_REFERER'] == '' ? url('', array('absolute' => TRUE)) : url(ltrim($_SERVER['HTTP_REFERER'], '/'), array('absolute' => TRUE))));
+	}
+}
+
+//////////////////////////////////////////// fix forms & pages ////////////////////////////////////////////
+
+// forbid to login by cas-accounts
+function cas_client_form_user_login_alter(&$form, $form_state) {
+	array_unshift($form['#validate'], '_cas_client_login_validate');
+}
+
+function cas_client_form_user_login_block_alter(&$form, $form_state) {
+	cas_client_form_user_login_alter($form, $form_state);
+}
+
+function _cas_client_login_validate(&$form, &$form_state) {
+	$name = trim($form_state['values']['name']);
+	$user = user_load(array('name' => $name));
+	if ($user->uid && _cas_client_is_external_user($user->uid)) {
+		form_set_error('name', 'Извините, это имя пользователя или пароль неверны.');
+	}
+}
+
+// deny change pass, mail, profile fields
+function cas_client_form_alter(&$form, $form_state, $form_id) {
+	//global $user;
+    $user = $form['_account']['#value'];
+	if ($form_id == 'user_profile_form' && _cas_client_is_external_user($user->uid)) {
+		if (_cas_client_config('deny_change_password') ) {
+			unset($form['account']['pass']);
+		}
+		if (_cas_client_config('deny_change_mail')) {
+			$form['account']['mail']['#attributes']['readonly'] = 'readonly';
+		}
+		$fields = _cas_client_config('deny_change_profile_fields');
+		foreach ($form as $category_name => $category) {
+			if ($category['#type'] == 'fieldset') {
+				foreach ($fields as $field) {
+					if (isset($form[$category_name][$field])) {
+						$form[$category_name][$field]['#attributes']['readonly'] = 'readonly';
+					}
+				}
+			}
+		}
+	}
+}
+
+function cas_client_form_user_pass_alter(&$form, $form_state) {
+	array_unshift($form['#validate'], '_cas_client_user_pass_validate');
+}
+
+function _cas_client_user_pass_validate(&$form, &$form_state) {
+	$name = trim($form_state['values']['name']);
+	$field = strpos($name, '@') === FALSE ? 'name' : 'mail';
+	$user = user_load(array($field => $name));
+	if ($user->uid && _cas_client_is_external_user($user->uid)) {
+		form_set_error('name', 'Извините, «' . check_plain($name) . '» не распознано как имя пользователя или e-mail адрес.');
+	}
+}
+
+function cas_client_profile_alter(&$account) {
+	if ($GLOBALS['user']->uid == $account->uid && _cas_client_is_external_user($account->uid)) {
+		$account->content['cas_client'] = array(
+			'#type' => 'user_profile_category',
+			'#title' => 'Сервис идентификации пользователей',
+			'#weight' => 10,
+			'description' => array('#value' => '<p>Изменить имя пользователя, пароль, e-mail и некоторые другие сведения можно только с помощью сервиса идентификации пользователей.</p>', '#weight' => 1),
+			'link' => array('#value' => l('Перейти к моему профилю на сервисе', _cas_client_config('server') . 'login'), '#weight' => 2),
+		);
+	}
+}
+
+/*
+// сделать блок с ссылками: вход (или кнопка), локальный вход (опция), регистрация (опция), восстановление пароля (опция), выход
+*/
+function cas_client_block($op = 'list', $delta = 0, $edit = array()) {
+	if ($op == 'list') {
+		$blocks[0] = array('info' => 'Идентификация пользователей');
+		return $blocks;
+	}
+	elseif ($op == 'view') {
+		$block['subject'] = 'Вход для пользователей';
+		$block['content'] = _cas_client_block();
+		return $block;
+	}
+}
+
+function _cas_client_block() {
+	global $user;
+	return '!';
+}/*
+*/

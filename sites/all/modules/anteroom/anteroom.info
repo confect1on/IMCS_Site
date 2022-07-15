@@ -1,0 +1,6 @@
+name = anteroom
+description = Implementation of content type anteroom.
+core = 6.x
+dependencies[] = node
+dependencies[] = comment
+package = Сухобузимский районный портал

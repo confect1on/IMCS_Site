@@ -1,0 +1,19 @@
+<?php
+
+function sfu_search_nodeapi($node, $op, $teaser = NULL, $page = NULL) {
+	if ($op == 'view' && !$teaser && $page) {
+		$created = format_date($node->created, 'custom', 'Y-m-d');
+		$year = format_date($node->created, 'custom', 'Y');
+		$monthes = (int)((time() - $node->created) / (60 * 60 * 24 * 30.5));
+		$modified = format_date($node->changed, 'custom', 'Y-m-d');
+		drupal_set_html_head(
+			"<meta name=\"created\" content=\"$created\" />\r\n" .
+			"<meta name=\"created_year\" content=\"$year\" />\r\n" .
+			"<meta name=\"created_monthes\" content=\"$monthes\" />\r\n" .
+			"<meta name=\"modified\" content=\"$modified\" />\r\n" .
+			"<meta name=\"real_last_modified\" content=\"1\" />\r\n" .
+			"<meta name=\"type\" content=\"$node->type\" />"
+		);
+		drupal_set_header("Last-Modified: " . date("D, d M Y G:i:s T", $node->changed));
+	}
+}

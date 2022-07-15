@@ -1,0 +1,28 @@
+<html>
+<head>
+   <title>js_cmd</title>
+	<link rel='stylesheet' type='text/css' href='cmd.css' />
+	<script src='../../../../../../../misc/jquery.js' type='text/javascript'></script>
+	<script src='../js_expression_evaluator/parser.js' type='text/javascript'></script>
+	<script src='cmd.js' type='text/javascript'></script>
+</head>
+
+<body>
+
+<input type='text' size='60' id='cmd' /> <input type='button' value='Run' id='cmd-button' />
+
+<div id="cmd-history">
+   <a href="#" id="cmd-clear-history">Clear history</a>
+</div>
+
+<script type='text/javascript'>
+$("#cmd").cmd({
+   handler: function(cmd) {return cmd},
+   history: $("#cmd-history"),
+   clear_history: $("#cmd-clear-history"),
+   button: $("#cmd-button")
+});
+</script>
+
+</body>
+</html>

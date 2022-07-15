@@ -1,0 +1,215 @@
+
+
+.node-unpublished{background-color:#fff4f4;}.preview .node{background-color:#ffffea;}#node-admin-filter ul{list-style-type:none;padding:0;margin:0;width:100%;}#node-admin-buttons{float:left;
+  margin-left:0.5em;
+  clear:right;}td.revision-current{background:#ffc;}.node-form .form-text{display:block;width:95%;}.node-form .container-inline .form-text{display:inline;width:auto;}.node-form .standard{clear:both;}.node-form textarea{display:block;width:95%;}.node-form .attachments fieldset{float:none;display:block;}.terms-inline{display:inline;}
+
+
+fieldset{margin-bottom:1em;padding:.5em;}form{margin:0;padding:0;}hr{height:1px;border:1px solid gray;}img{border:0;}table{border-collapse:collapse;}th{text-align:left;
+  padding-right:1em;
+  border-bottom:3px solid #ccc;}
+.clear-block:after{content:".";display:block;height:0;clear:both;visibility:hidden;}.clear-block{display:inline-block;}/* Hides from IE-mac \*/
+* html .clear-block{height:1%;}.clear-block{display:block;}
+
+
+
+body.drag{cursor:move;}th.active img{display:inline;}tr.even,tr.odd{background-color:#eee;border-bottom:1px solid #ccc;padding:0.1em 0.6em;}tr.drag{background-color:#fffff0;}tr.drag-previous{background-color:#ffd;}td.active{background-color:#ddd;}td.checkbox,th.checkbox{text-align:center;}tbody{border-top:1px solid #ccc;}tbody th{border-bottom:1px solid #ccc;}thead th{text-align:left;
+  padding-right:1em;
+  border-bottom:3px solid #ccc;}
+.breadcrumb{padding-bottom:.5em}div.indentation{width:20px;height:1.7em;margin:-0.4em 0.2em -0.4em -0.4em;
+  padding:0.42em 0 0.42em 0.6em;
+  float:left;}div.tree-child{background:url(/misc/tree.png) no-repeat 11px center;}div.tree-child-last{background:url(/misc/tree-bottom.png) no-repeat 11px center;}div.tree-child-horizontal{background:url(/misc/tree.png) no-repeat -11px center;}.error{color:#e55;}div.error{border:1px solid #d77;}div.error,tr.error{background:#fcc;color:#200;padding:2px;}.warning{color:#e09010;}div.warning{border:1px solid #f0c020;}div.warning,tr.warning{background:#ffd;color:#220;padding:2px;}.ok{color:#008000;}div.ok{border:1px solid #00aa00;}div.ok,tr.ok{background:#dfd;color:#020;padding:2px;}.item-list .icon{color:#555;float:right;
+  padding-left:0.25em;
+  clear:right;}.item-list .title{font-weight:bold;}.item-list ul{margin:0 0 0.75em 0;padding:0;}.item-list ul li{margin:0 0 0.25em 1.5em;
+  padding:0;list-style:disc;}ol.task-list li.active{font-weight:bold;}.form-item{margin-top:1em;margin-bottom:1em;}tr.odd .form-item,tr.even .form-item{margin-top:0;margin-bottom:0;white-space:nowrap;}tr.merge-down,tr.merge-down td,tr.merge-down th{border-bottom-width:0 !important;}tr.merge-up,tr.merge-up td,tr.merge-up th{border-top-width:0 !important;}.form-item input.error,.form-item textarea.error,.form-item select.error{border:2px solid red;}.form-item .description{font-size:0.85em;}.form-item label{display:block;font-weight:bold;}.form-item label.option{display:inline;font-weight:normal;}.form-checkboxes,.form-radios{margin:1em 0;}.form-checkboxes .form-item,.form-radios .form-item{margin-top:0.4em;margin-bottom:0.4em;}.marker,.form-required{color:#f00;}.more-link{text-align:right;}.more-help-link{font-size:0.85em;text-align:right;}.nowrap{white-space:nowrap;}.item-list .pager{clear:both;text-align:center;}.item-list .pager li{background-image:none;display:inline;list-style-type:none;padding:0.5em;}.pager-current{font-weight:bold;}.tips{margin-top:0;margin-bottom:0;padding-top:0;padding-bottom:0;font-size:0.9em;}dl.multiselect dd.b,dl.multiselect dd.b .form-item,dl.multiselect dd.b select{font-family:inherit;font-size:inherit;width:14em;}dl.multiselect dd.a,dl.multiselect dd.a .form-item{width:8em;}dl.multiselect dt,dl.multiselect dd{float:left;
+  line-height:1.75em;padding:0;margin:0 1em 0 0;}dl.multiselect .form-item{height:1.75em;margin:0;}
+.container-inline div,.container-inline label{display:inline;}
+ul.primary{border-collapse:collapse;padding:0 0 0 1em;
+  white-space:nowrap;list-style:none;margin:5px;height:auto;line-height:normal;border-bottom:1px solid #bbb;}ul.primary li{display:inline;}ul.primary li a{background-color:#ddd;border-color:#bbb;border-width:1px;border-style:solid solid none solid;height:auto;margin-right:0.5em;
+  padding:0 1em;text-decoration:none;}ul.primary li.active a{background-color:#fff;border:1px solid #bbb;border-bottom:#fff 1px solid;}ul.primary li a:hover{background-color:#eee;border-color:#ccc;border-bottom-color:#eee;}ul.secondary{border-bottom:1px solid #bbb;padding:0.5em 1em;margin:5px;}ul.secondary li{display:inline;padding:0 1em;border-right:1px solid #ccc;}ul.secondary a{padding:0;text-decoration:none;}ul.secondary a.active{border-bottom:4px solid #999;}
+
+#autocomplete{position:absolute;border:1px solid;overflow:hidden;z-index:100;}#autocomplete ul{margin:0;padding:0;list-style:none;}#autocomplete li{background:#fff;color:#000;white-space:pre;cursor:default;}#autocomplete li.selected{background:#0072b9;color:#fff;}
+html.js input.form-autocomplete{background-image:url(/misc/throbber.gif);background-repeat:no-repeat;background-position:100% 2px;}html.js input.throbbing{background-position:100% -18px;}
+html.js fieldset.collapsed{border-bottom-width:0;border-left-width:0;border-right-width:0;margin-bottom:0;height:1em;}html.js fieldset.collapsed *{display:none;}html.js fieldset.collapsed legend{display:block;}html.js fieldset.collapsible legend a{padding-left:15px;
+  background:url(/misc/menu-expanded.png) 5px 75% no-repeat;}html.js fieldset.collapsed legend a{background-image:url(/misc/menu-collapsed.png);
+  background-position:5px 50%;}
+* html.js fieldset.collapsed legend,* html.js fieldset.collapsed legend *,* html.js fieldset.collapsed table *{display:inline;}
+html.js fieldset.collapsible{position:relative;}html.js fieldset.collapsible legend a{display:block;}
+html.js fieldset.collapsible .fieldset-wrapper{overflow:auto;}
+.resizable-textarea{width:95%;}.resizable-textarea .grippie{height:9px;overflow:hidden;background:#eee url(/misc/grippie.png) no-repeat center 2px;border:1px solid #ddd;border-top-width:0;cursor:s-resize;}html.js .resizable-textarea textarea{margin-bottom:0;width:100%;display:block;}
+.draggable a.tabledrag-handle{cursor:move;float:left;
+  height:1.7em;margin:-0.4em 0 -0.4em -0.5em;
+  padding:0.42em 1.5em 0.42em 0.5em;
+  text-decoration:none;}a.tabledrag-handle:hover{text-decoration:none;}a.tabledrag-handle .handle{margin-top:4px;height:13px;width:13px;background:url(/misc/draggable.png) no-repeat 0 0;}a.tabledrag-handle-hover .handle{background-position:0 -20px;}
+.joined + .grippie{height:5px;background-position:center 1px;margin-bottom:-2px;}
+.teaser-checkbox{padding-top:1px;}div.teaser-button-wrapper{float:right;
+  padding-right:5%;
+  margin:0;}.teaser-checkbox div.form-item{float:right;
+  margin:0 5% 0 0;
+  padding:0;}textarea.teaser{display:none;}html.js .no-js{display:none;}
+.progress{font-weight:bold;}.progress .bar{background:#fff url(/misc/progress.gif);border:1px solid #00375a;height:1.5em;margin:0 0.2em;}.progress .filled{background:#0072b9;height:1em;border-bottom:0.5em solid #004a73;width:0%;}.progress .percentage{float:right;}.progress-disabled{float:left;}.ahah-progress{float:left;}.ahah-progress .throbber{width:15px;height:15px;margin:2px;background:transparent url(/misc/throbber.gif) no-repeat 0px -18px;float:left;}tr .ahah-progress .throbber{margin:0 2px;}.ahah-progress-bar{width:16em;}
+#first-time strong{display:block;padding:1.5em 0 .5em;}
+tr.selected td{background:#ffc;}
+table.sticky-header{margin-top:0;background:#fff;}
+#clean-url.install{display:none;}
+html.js .js-hide{display:none;}
+#system-modules div.incompatible{font-weight:bold;}
+#system-themes-form div.incompatible{font-weight:bold;}
+span.password-strength{visibility:hidden;}input.password-field{margin-right:10px;}div.password-description{padding:0 2px;margin:4px 0 0 0;font-size:0.85em;max-width:500px;}div.password-description ul{margin-bottom:0;}.password-parent{margin:0 0 0 0;}
+input.password-confirm{margin-right:10px;}.confirm-parent{margin:5px 0 0 0;}span.password-confirm{visibility:hidden;}span.password-confirm span{font-weight:normal;}
+
+ul.menu{list-style:none;border:none;text-align:left;}ul.menu li{margin:0 0 0 0.5em;}li.expanded{list-style-type:circle;list-style-image:url(/misc/menu-expanded.png);padding:0.2em 0.5em 0 0;
+  margin:0;}li.collapsed{list-style-type:disc;list-style-image:url(/misc/menu-collapsed.png);
+  padding:0.2em 0.5em 0 0;
+  margin:0;}li.leaf{list-style-type:square;list-style-image:url(/misc/menu-leaf.png);padding:0.2em 0.5em 0 0;
+  margin:0;}li a.active{color:#000;}td.menu-disabled{background:#ccc;}ul.links{margin:0;padding:0;}ul.links.inline{display:inline;}ul.links li{display:inline;list-style-type:none;padding:0 0.5em;}.block ul{margin:0;padding:0 0 0.25em 1em;}
+
+#permissions td.module{font-weight:bold;}#permissions td.permission{padding-left:1.5em;}#access-rules .access-type,#access-rules .rule-type{margin-right:1em;
+  float:left;}#access-rules .access-type .form-item,#access-rules .rule-type .form-item{margin-top:0;}#access-rules .mask{clear:both;}#user-login-form{text-align:center;}#user-admin-filter ul{list-style-type:none;padding:0;margin:0;width:100%;}#user-admin-buttons{float:left;
+  margin-left:0.5em;
+  clear:right;}#user-admin-settings fieldset .description{font-size:0.85em;padding-bottom:.5em;}
+.profile{clear:both;margin:1em 0;}.profile .picture{float:right;
+  margin:0 1em 1em 0;}.profile h3{border-bottom:1px solid #ccc;}.profile dl{margin:0 0 1.5em 0;}.profile dt{margin:0 0 0.2em 0;font-weight:bold;}.profile dd{margin:0 0 1em 0;}
+
+
+.field .field-label,.field .field-label-inline,.field .field-label-inline-first{font-weight:bold;}.field .field-label-inline,.field .field-label-inline-first{display:inline;}.field .field-label-inline{visibility:hidden;}
+.node-form .content-multiple-table td.content-multiple-drag{width:30px;padding-right:0;}.node-form .content-multiple-table td.content-multiple-drag a.tabledrag-handle{padding-right:.5em;}.node-form .content-add-more .form-submit{margin:0;}.node-form .number{display:inline;width:auto;}.node-form .text{width:auto;}
+.form-item #autocomplete .reference-autocomplete{white-space:normal;}.form-item #autocomplete .reference-autocomplete label{display:inline;font-weight:normal;}
+#content-field-overview-form .advanced-help-link,#content-display-overview-form .advanced-help-link{margin:4px 4px 0 0;}#content-field-overview-form .label-group,#content-display-overview-form .label-group,#content-copy-export-form .label-group{font-weight:bold;}table#content-field-overview .label-add-new-field,table#content-field-overview .label-add-existing-field,table#content-field-overview .label-add-new-group{float:left;}table#content-field-overview tr.content-add-new .tabledrag-changed{display:none;}table#content-field-overview tr.content-add-new .description{margin-bottom:0;}table#content-field-overview .content-new{font-weight:bold;padding-bottom:.5em;}
+.advanced-help-topic h3,.advanced-help-topic h4,.advanced-help-topic h5,.advanced-help-topic h6{margin:1em 0 .5em 0;}.advanced-help-topic dd{margin-bottom:.5em;}.advanced-help-topic span.code{background-color:#EDF1F3;font-family:"Bitstream Vera Sans Mono",Monaco,"Lucida Console",monospace;font-size:0.9em;padding:1px;}.advanced-help-topic .content-border{border:1px solid #AAA}
+
+
+
+
+
+
+.filefield-icon{float:left;
+  margin-right:0.4em;}
+
+
+.filefield-element{margin:1em 0;white-space:normal;}.filefield-element .widget-preview{float:left;
+  padding-right:10px;
+  border-right:1px solid #CCC;
+  margin-right:10px;
+  max-width:30%;}.filefield-element .widget-edit{float:left;
+  max-width:70%;}.filefield-element .filefield-preview{width:16em;overflow:hidden;}.filefield-element .widget-edit .form-item{margin:0 0 1em 0;}.filefield-element input.form-submit,.filefield-element input.form-file{margin:0;}.filefield-element input.progress-disabled{float:none;display:inline;}.filefield-element div.ahah-progress,.filefield-element div.throbber{display:inline;float:none;padding:1px 13px 2px 3px;}.filefield-element div.ahah-progress-bar{display:none;margin-top:4px;width:28em;padding:0;}.filefield-element div.ahah-progress-bar div.bar{margin:0;}
+
+
+
+.filefield-generic-edit .filefield-icon{float:left;
+  margin-right:0.7em;
+  margin-top:0.3em;}.filefield-generic-edit-description{margin-right:6em;}
+.filefield-generic-edit .form-text{width:99%;}.filefield-generic-edit .description{white-space:normal;margin-bottom:0;overflow:auto;}
+.latex{vertical-align:middle;}
+
+.task{margin-top:0.7em;}.task-label{font-weight:bold;white-space:nowrap;}.task-value{margin-right:1em;white-space:nowrap;}.task-task{background:#F3F1F1;padding:0.4em 1em;}.task .links{display:block !important;margin-top:1em;}.task-solved{float:right;background:#8CD9B3;padding:0.1em 0.6em;}.task-solve{float:right;}.task-meta{padding:0.4em 1em 0.6em 1em;background:#F3F1F1;margin-bottom:1em;font-size:11px;}.task-meta table,.task-meta td{margin:0;padding:0;}.task h3{background:#D9DFE5;padding:3px 6px;}.task .content{margin-top:0 !important;}.node-unpublished .task-task,.node-unpublished .task-meta{background:#FFF4F4;}
+
+#tasks-attempt-form .form-submit{margin-top:0;}#tasks-attempt-form{margin-top:2em;}
+
+.tasks-self td{background:#8CD9B3;}
+
+#tasks-admin-form .form-submit{margin:0;}
+
+.block-tasks h2{margin-bottom:0.5em;}.block-tasks li,.block-tasks ul{list-style-type:none;margin:0.5em 0 0 0;padding:0;}
+
+div.fieldgroup{margin:.5em 0 1em 0;}div.fieldgroup .content{padding-left:1em;}.node-anteroom div.comment{margin-bottom:10px;padding:5px;}.node-anteroom div.comment h3.title{display:none;}.node-anteroom div.comment-published{background-color:#f8fff7;border:1px solid #aca;}.node-anteroom div.answer div.comment-published{background:none !important;border:none;}div.indented.answer{margin-left:15px;padding-left:10px;background:url(/sites/all/modules/anteroom/arrow.gif) top left no-repeat;}.node-anteroom fieldset legend{font-weight:bold;}
+
+.bue-ui{margin:1px 0px;}.bue-button{margin:1px;border:1px solid #ccc;cursor:pointer;padding:0;}.bue-button:hover{border-color:#fc6;}.bue-text-button{height:22px;font-size:11px;font-weight:bold;background-color:#fff;color:#444;text-align:center;}.bue-sprite-button{background:transparent none no-repeat 0 0;}.bue-ui .stay-clicked{border-color:#f00;}.bue-ui span.separator{margin:0px 1px;}.bue-ui img,.bue-button{vertical-align:middle;}
+.bue-popup{z-index:10;position:absolute;font:12px verdana;width:auto;margin:0;text-align:left;color:#333;border:none;outline:none;}.bue-popup-head{cursor:move;font-weight:bold;background-color:#e6e6fa;border:1px solid #999;margin-bottom:-1px;}.bue-popup-title{float:left;margin:0.4em 0.5em;}.bue-popup-close{float:right;cursor:pointer;margin:0.2em 0.5em;padding:0.2em 0.5em;border:1px solid #bbb;font-size:0.9em;}.bue-popup-close:hover{background-color:#f5f5fa;}.bue-popup-body{background-color:#f5f5fa;border:1px solid #999;overflow:hidden;}.bue-popup-content{margin:0.5em;}.bue-popup-content table{margin:0em;border:none;}.bue-popup-content tbody{border:none;}.bue-popup .bue-zero,.bue-zero{margin:0em;padding:0em;border:none;background:none;}
+.bue-popup-content ul.tag-chooser{margin:0em;padding:0em;}.bue-popup-content ul.tag-chooser li.choice{background:none;list-style:circle;margin:0.3em 0.5em 0.3em 1.5em;padding:0em;}.bue-popup-content ul.tag-chooser a.choice-link{display:block;color:#000;}#bue-help{min-width:200px;max-width:400px;}
+#bue-imce-pop iframe{width:720px;height:520px;border:none;}#bue-imce-pop .bue-popup-content{margin:0em;}
+
+
+
+
+html{height:100%;}body{margin:0;padding:0;height:100%;font:12px/170% Verdana,sans-serif;color:#494949;}input{font:12px/100% Verdana,sans-serif;color:#494949;}textarea,select{font:12px/160% Verdana,sans-serif;color:#494949;}h1,h2,h3,h4,h5,h6{margin:0;padding:0;font-weight:normal;font-family:Helvetica,Arial,sans-serif;}h1{font-size:180%;}h2{font-size:180%;line-height:130%;}h3{font-size:150%;line-height:130%;}.content h3{padding-top:0.5em;}h4{font-size:130%;padding-top:0.7em;}h5{font-size:120%;}h6{font-size:110%;}ul,ol,quote,code,fieldset{margin:0.5em 0 0.75em 0em;}p{xmargin:0.6em 0 1.2em;margin:0.5em 0 0.75em 0;padding:0;}a:link,a:visited{color:#444;text-decoration:none;}a:hover{color:#ff6600;text-decoration:underline;}a:active,a.active{}.node .content a,ul.person li a,.page-content a,.page-content .menu a:visited{color:#172981;text-decoration:underline;}.node .content a:visited,.page-content a:visited{color:#622280;}.node .content a:hover,ul.person li a:hover,.node .content  a:active,.page-content a:hover,.page-content a:active,.page-content .menu a:hover,.page-content .menu a:active{color:#eb7405;text-decoration:underline;}.pager a,.tabs a,.page-content h2 a,.page-content h3 a,.page-content .submitted a{color:#444 !important;text-decoration:none !important;}.pager a:hover,.pager a:active,.page-content h2 a:hover,.page-content h2 a:active,.page-content h3 a:hover,.page-content h3 a:active,.page-content .submitted a:hover,.page-content .submitted a:active{text-decoration:underline !important;color:#ff6600 !important;}ul.person{margin-left:20px;padding-left:0;margin-bottom:2em;}.epa{font-weight:bold !important;}div.quick-links{margin-top:20px;}.quick-links a{margin-right:5px;color:#172981 !important;}.quick-links a:hover{color:#eb7405 !important;}.quick-links ul,.quick-links li{list-style-type:none;margin-left:0;padding-left:0;}.quick-links ul{margin-left:4px;}.node .content ul li{xpadding-left:20px;list-style-image:url(/sites/all/themes/sfu_math/images/menu-collapsed.png);}.node .content ul{padding-left:30px;}hr{margin:0;padding:0;border:none;height:1px;xbackground:#5294c1;xbackground:#d3f4e7;background:#e9eff3;background:#ccc;xbackground:#8CD9B3;}ul{xmargin:0.5em 0 1em;xpadding:0;}ol{xmargin:0.75em 0 1.25em;xpadding:0;}ol li,ul li{xmargin:0.4em 0 0.4em .5em;}ul.menu,.item-list ul{margin:0.35em 0 0 0.5em;
+  padding:0;}ul.menu ul,.item-list ul ul{margin-left:0.3em;}ol li,ul li,ul.menu li,.item-list ul li,li.leaf{xmargin:0.15em 0 0.15em .5em;
+ margin:0 0 0.2em 0;padding:0;}ul.menu li,.item-list ul li,li.leaf{padding:0 0 .2em 0.9em;list-style-type:none;list-style-image:none;}ol li{xpadding:0 0 .3em;xmargin-left:1em;}ul.menu li{padding-left:14px;}ul li.expanded{background:transparent url(/sites/all/themes/sfu_math/images/menu-expanded.png) no-repeat 0px 6px;}ul li li.expanded{background:transparent url(/sites/all/themes/sfu_math/images/menu-expanded.png) no-repeat 0px 4px;}ul li.collapsed{background:transparent url(/sites/all/themes/sfu_math/images/menu-collapsed.png) no-repeat 0px 6px;}ul li li.collapsed{background:transparent url(/sites/all/themes/sfu_math/images/menu-collapsed.png) no-repeat 0px 4px;}ul li.leaf a,ul li.expanded a,ul li.collapsed a{display:block;}ul.inline li{background:none;margin:0;padding:0 0.8em 0 0;}ol.task-list{margin-left:0;
+  list-style-type:none;list-style-image:none;}ol.task-list li{padding:0.5em 1em 0.5em 2em;}ol.task-list li.active{background:transparent url(/sites/all/themes/sfu_math/images/task-list.png) no-repeat 3px 50%;}ol.task-list li.done{color:#393;background:transparent url(/sites/all/misc/watchdog-ok.png) no-repeat 0px 50%;}ol.task-list li.active{margin-right:1em;}fieldset ul.clear-block li{margin:0;padding:0;background-image:none;}dl{margin:0.5em 0 1em 1.5em;}dl dt{}dl dd{margin:0 0 .5em 1.5em;}img,a img{border:none;}.page-content td,.page-content th{border-collapse:collapse;}.border td,.border th{border:1px solid #8CD9B3;xborder-color:#ccc;xborder-bottom-width:2px;xborder-top-width:2px;}.border th{border-bottom:2px solid #8CD9B3}table{margin:1em 0;width:100%;}thead th{border-bottom:2px solid #d3f4e7;
+  color:#494949;font-weight:bold;}thead,tbody{border:0;}th a:link,th a:visited{color:#6f9dbd;}td,th{padding:.3em .5em;}tr.even,tr.odd,tbody th{border:solid #d3f4e7;
+  border-width:1px 0;}tr.odd,tr.info{background-color:#edfaf5; }tr.even{background-color:#fff;}tr.drag{background-color:#fffff0;}tr.drag-previous{background-color:#ffd;}tr.odd td.active{background-color:#ddecf5;}tr.even td.active{background-color:#e6f1f7;}td.region,td.module,td.container,td.category{border-top:1.5em solid #fff;border-bottom:1px solid #b4d7f0;background-color:#d4e7f3;color:#455067;font-weight:bold;}tr:first-child td.region,tr:first-child td.module,tr:first-child td.container,tr:first-child td.category{border-top-width:0;}span.form-required{color:#ffae00;}span.submitted,.description{font-size:12px;color:#898989;}.node h2 .submitted{white-space:nowrap;}.description{line-height:150%;margin-bottom:0.75em;color:#898989;}.messages,.preview{margin:.75em 0 .75em;padding:.5em 1em !important;}.messages ul{margin:0;}.form-checkboxes,.form-radios,.form-checkboxes .form-item,.form-radios .form-item{margin:0.25em 0;}#center form{margin-bottom:2em;}.form-button,.form-submit{margin:2em 0.5em 1em 0;}#dblog-form-overview .form-submit,.confirmation .form-submit,.search-form .form-submit,.poll .form-submit,fieldset .form-button,fieldset .form-submit,.sidebar .form-button,.sidebar .form-submit,table .form-button,table .form-submit{margin:0;}.box{margin-bottom:2.5em;}
+#header-region{min-height:1em;
+ background-color:#8CD9B3;width:100%;min-width:980px;padding:3px 0;}#header-region .block{display:block;margin:0 1em;}#header-region .block-region{display:block;margin:0 0 0;padding:0.5em;position:relative;top:0.5em;}#header-region *{line-height:1.5em;margin-top:0;margin-bottom:0;}
+#header-region script{display:none;}#header-region p,#header-region img{margin-top:0.5em;}#header-region h2{margin:0 1em 0 0;}#header-region h3,#header-region label,#header-region li{margin:0 1em;padding:0;background:none;}#wrapper{
+  }#wrapper #container{margin:0 auto;padding:0 0px 0 0px;
+  width:980px;}#wrapper #container #header{height:280px;margin:0;padding:0;}#wrapper #container #header{}#wrapper #container #header h1,#wrapper #container #header h1 a:link,#wrapper #container #header h1 a:visited{line-height:120px;position:relative;white-space:nowrap;}#wrapper #container #header h1 span{font-weight:bold;}#wrapper #container #header h1 img{padding-top:14px;
+  float:left;}
+body.sidebars{min-width:980px;}
+body.sidebar-left,body.sidebar-right{min-width:780px;}
+#wrapper #container #center{float:left;
+ }
+#wrapper #container .sidebar{}#wrapper #container .sidebar .block{}#sidebar-left .block{
+  padding:5px 7px;}.block .content{margin:0;}#sidebar-left .block-region{}.block-region{padding:1em;background:transparent;border:2px dashed #b4d7f0;text-align:center;font-size:1.3em;}
+#wrapper #container #center #squeeze{position:relative;padding-top:15px;}#wrapper #container #center .right-corner{
+  position:relative;left:0;}#wrapper #container #center .right-corner .left-corner{padding:30px 30px 30px 10px;
+  margin-left:0px;position:relative;left:0px;min-height:400px;}
+
+.breadcrumb{position:relative;top:-40px;height:25px;left:5px;
+  
+  margin:0;padding:0;margin-bottom:-25px;}#wrapp{min-height:100%;
+  position:relative;}#content{position:relative;padding-bottom:40px;z-index:5;clear:both;}#footer{height:40px;width:100%;position:absolute;left:0;bottom:0;background:#8CD9B3;min-width:980px;text-align:center;margin-top:0;padding:5px 0;z-index:5;}#copyright{position:relative;}
+#wrapper #container #header h1,#wrapper #container #header h1 a:link,#wrapper #container #header h1 a:visited{color:#fff;font-weight:normal;text-shadow:#1659ac 0px 1px 3px;font-size:1.5em;}#wrapper #container #header h1 a:hover{text-decoration:none;}#wrapper #container .breadcrumb{font-size:0.92em;}#wrapper #container .breadcrumb,#wrapper #container .breadcrumb a{color:#777;}#mission{padding:1em;background-color:#fff;border:1px solid #e0e5fb;margin-bottom:2em;}
+ul.primary,ul.primary li,ul.secondary,ul.secondary li{border:0;background:none;margin:0;padding:0;}#tabs-wrapper{margin:0;padding:0;xborder-bottom:1px solid #e9eff3;position:relative;}ul.primary{padding:0.5em 0 10px;float:left;}ul.secondary{clear:both;text-align:left;
+  border-bottom:1px solid #e9eff3;margin:-0.2em -26px 1em;padding:0 26px 0.6em;}h2.with-tabs{float:left;
+  margin:0 2em 0 0;
+  padding:0;}ul.primary li a,ul.primary li.active a,ul.primary li a:hover,ul.primary li a:visited,ul.secondary li a,ul.secondary li.active a,ul.secondary li a:hover,ul.secondary li a:visited{border:0;background:transparent;padding:4px 1em;margin:0 0 0 1px;
+  height:auto;text-decoration:none;position:relative;top:-1px;display:inline-block;}ul.primary li.active a,ul.primary li.active a:link,ul.primary li.active a:visited,ul.primary li a:hover,ul.secondary li.active a,ul.secondary li.active a:link,ul.secondary li.active a:visited,ul.secondary li a:hover{background:url(/sites/all/themes/sfu_math/images/bg-tab.png) repeat-x 0 50%;}ul.primary li.active a,ul.secondary li.active a{font-weight:bold;}
+.teaser{xborder-bottom:1px solid #e9eff3;xborder-color:#D9DFE5;xpadding-top:10px;padding:0.7em 1em 0.5em 1em;margin:0.5em 0 0.5em 0;}.view-frontnews .news-line{margin-top:0.5em;}.view-frontnews .views-row-odd,.view-home .views-row-odd{background:#F3F1F1;}.view-frontnews .views-row-even .node,.view-home .views-row-even .node{border:1px solid #E8E8E8;}.sticky.teaser{background:#E1FAEE;xborder:1px solid #8CD9B3;}.view-frontnews .views-row-even .sticky.teaser,.view-home .views-row-even .sticky.teaser{border:none;}img.imagefield-field_person_photo,img.imagefield-field_news_img{padding:1px !important;border:1px solid #dadee1 !important;}.node img.left,.node .left img{float:left;margin:0 10px 5px 0;padding:1px !important;border:1px solid #dadee1 !important;}.node img.right,.node .right img{float:right;margin:0 0 5px 10px;padding:1px !important;border:1px solid #dadee1 !important;}.field-field-news-source{font-style:italic;}.field-field-news-place{margin-bottom:1em;}.field-field-news-date{xfont-size:14px;xfont-weight:bold;}.field-field-news-date .field-label-inline-first{font-size:12px;}.page.full .submitted{xdisplay:none;}a:hover .imagefield-field_news_img{border-color:#ff6600;}ul.links li,ul.inline li{margin-left:0;margin-right:0;padding-left:0;
+  padding-right:1em;
+  background-image:none;}.node .links,.comment .links{xtext-align:right;}.comment .links{margin-bottom:0.3em;}.node .links ul.links li,.comment .links ul.links li{}.terms ul.links li{margin-left:0;margin-right:0;padding-right:0;padding-left:1em;}.picture{float:right;
+  clear:right;
+  padding-left:1em;}.new{color:#ffae00;font-size:0.92em;font-weight:bold;float:right;}.terms{float:right;}.preview .node,.preview .comment,x.sticky{margin:0;padding:0.5em 0;border:0;background:0;}
+
+.comment .submitted{display:block;padding:0.7em 0em 0.4em 0em;}.news.teaser .comment_forbidden,.comment .comment_forbidden{display:none;}#comments{position:relative;top:1px;margin:1.5em -20px 0;padding:0 0px;}.comment-s{display:block;margin:1em;xpadding:10px;font-size:20px;}#comments h2.comments{xmargin:0 -25px;padding:.5em 25px;xbackground:#fff url(/sites/all/themes/sfu_math/images/gradient-inner.png) repeat-x 0 0;}.comment{xmargin:0 25px;xpadding-left:20px;margin-left:20px;border-top:1px solid #e9eff3;}.page-content .box{margin-left:20px;}.indented{margin-left:25px;}.comment h3 a.active{}.node .content,.comment .content{margin:0.2em 0;}
+tr.menu-disabled{opacity:0.5;}tr.odd td.menu-disabled{background-color:#edfaf5; }tr.even td.menu-disabled{background-color:#fff;}
+.poll .bar{background:#fff url(/sites/all/themes/sfu_math/images/bg-bar-white.png) repeat-x 0 0;border:solid #f0f0f0;border-width:0 1px 1px;}.poll .bar .foreground{background:#71a7cc url(/sites/all/themes/sfu_math/images/bg-bar.png) repeat-x 0 100%;}.poll .percent{font-size:.9em;}
+#autocomplete li{cursor:default;padding:2px;margin:0;}
+fieldset{margin:1em 0;padding:1em;border:1px solid #d9eaf5;background:#fff url(/sites/all/themes/sfu_math/images/gradient-inner.png) repeat-x 0 0;}
+*:first-child+html fieldset{padding:0 1em 1em;background-position:0 .75em;background-color:transparent;}*:first-child+html fieldset > .description,*:first-child+html fieldset .fieldset-wrapper .description{padding-top:1em;}fieldset legend{
+  display:block;}*:first-child+html fieldset legend,*:first-child+html fieldset.collapsed legend{display:inline;}html.js fieldset.collapsed{background:transparent;padding-top:0;padding-bottom:.6em;}html.js fieldset.collapsible legend a{padding-left:2em;
+ }html.js fieldset.collapsed legend a{}
+#user-login-form{text-align:center;}#user-login-form ul{text-align:left;}
+.profile{margin-top:1.5em;}.profile h3{border-bottom:0;margin-bottom:1em;}.profile dl{margin:0;}.profile dt{font-weight:normal;color:#898989;font-size:0.92em;line-height:1.3em;margin-top:1.4em;margin-bottom:0.45em;}.profile dd{margin-bottom:1.6em;}
+div.admin-panel,div.admin-panel .description,div.admin-panel .body,div.admin,div.admin .left,div.admin .right,div.admin .expert-link,div.item-list,.menu{margin:0;padding:0;}.menu li li{font-size:11px;line-height:16px;}div.admin .left{float:left;
+  width:48%;}div.admin .right{float:right;
+  width:48%;}div.admin-panel{background:#fff url(/sites/all/themes/sfu_math/images/gradient-inner.png) repeat-x 0 0;padding:1em 1em 1.5em;}div.admin-panel .description{margin-bottom:1.5em;}div.admin-panel dl{margin:0;}div.admin-panel dd{color:#898989;font-size:0.92em;line-height:1.3em;margin-top:-.2em;margin-bottom:.65em;}table.system-status-report th{border-color:#d3f4e7;}#autocomplete li.selected,tr.selected td,tr.selected td.active{background:#027ac6;color:#fff;}tr.selected td a:link,tr.selected td a:visited,tr.selected td a:active{color:#d3f4e7;;}tr.taxonomy-term-preview{opacity:0.5;}tr.taxonomy-term-divider-top{border-bottom:none;}tr.taxonomy-term-divider-bottom{border-top:1px dotted #CCC;}
+
+
+
+
+.messages{background-color:#fff;border:1px solid #b8d3e5;}.preview{background-color:#fcfce8;border:1px solid #e5e58f;}div.status{color:#33a333;border-color:#c7f2c8;}div.error,tr.error{color:#a30000;background-color:#FFCCCC;}.form-item input.error,.form-item textarea.error{border:1px solid #c52020;color:#363636;}
+tr.dblog-user{background-color:#fcf9e5;}tr.dblog-user td.active{background-color:#fbf5cf;}tr.dblog-content{background-color:#fefefe;}tr.dblog-content td.active{background-color:#f5f5f5;}tr.dblog-warning{background-color:#fdf5e6;}tr.dblog-warning td.active{background-color:#fdf2de;}tr.dblog-error{background-color:#fbe4e4;}tr.dblog-error td.active{background-color:#fbdbdb;}tr.dblog-page-not-found,tr.dblog-access-denied{background:#d7ffd7;}tr.dblog-page-not-found td.active,tr.dblog-access-denied td.active{background:#c7eec7;}
+table.system-status-report tr.error,table.system-status-report tr.error th{background-color:#fcc;border-color:#ebb;color:#200;}table.system-status-report tr.warning,table.system-status-report tr.warning th{background-color:#ffd;border-color:#eeb;}table.system-status-report tr.ok,table.system-status-report tr.ok th{background-color:#dfd;border-color:#beb;}/**/
+
+#linkRing *{margin:0;padding:0;vertical-align:middle;}.submit{
+  position:relative;}#linkRing{
+  position:relative;padding:0px 7px;}#linkRing li{float:left;padding:0;margin:0;padding:0 5px;background:url(/sites/all/themes/sfu_math/img/l.png) no-repeat 0 50%;}#linkRing li.first{background:none;}#linkRing li.right{float:right;
+  white-space:nowrap;background:none;}#linkRing a{color:#44775f;}#container{
+  width:980px;position:relative;top:-33px;}#sidebar-left{
+  
+  width:233px;
+  float:left;position:relative;top:0px;}#sidebar1{height:33px;background:#e8e8e8 url(/sites/all/themes/sfu_math/img/navbar_shadow.png) repeat-y 100%;
+  margin-top:0;}#sidebar2{width:220px;margin-top:-33px;padding:0;}#center{margin-top:33px;margin-left:-5px;padding-left:30px;
+  width:700px;min-width:650px;xbackground:#eee;float:left;}#header{width:100%;height:213px;background:#fff url(/sites/all/themes/sfu_math/img/navbar_bg.png) repeat-x 0 100%;text-align:center;min-width:980px;}#photos{margin:0;padding:0;height:40px;background:url(/sites/all/themes/sfu_math/img/header_shadow.png) repeat-x 0 0;}#logo-floater{margin:0;padding:3px 0 0 0;white-space:nowrap;text-align:center;background:#c6c6c3 url(/sites/all/themes/sfu_math/img/header_bg.png) repeat-x 0 100%;}#logo-floater img{margin:0;vertical-align:middle;padding-right:13px;border-width:0;padding-bottom:10px;padding-top:5px;}#logo-floater a{text-decoration:none;color:#000;font-size:27px;}.menu a.active,ul.menu ul li.active-trail > a{
+  font-weight:bold;}.block-user{xposition:relative;xmargin:5px 10px 0px 0px;xpadding:10px 10px;border-top:dashed 1px #aaa;}div.clear{position:relative;clear:both;}
+
+#vk{padding:0.5em 0;}#vk ul{margin:0;padding:0;}#vkul{margin:0 0 0 0;padding:0 0 0 0;}#vkhide{border-top:#ccc solid 1px;margin-top:0.5em;padding-top:0;xpadding-bottom:0.5em;xbackground:red;}#vk li{float:left;padding:0;margin:0;padding:0 5px;background:url(/sites/all/themes/sfu_math/img/l.png) no-repeat 100% 50%;white-space:nowrap;}#vk li.last{background:none;}#vk ul li,#linkRing ul li,ul.person li,ul.non li{list-style-type:none;}
+
+#vk li a{text-decoration:none;color:#333;font-size:12px;display:block;padding:4px;}#vk li{background:none;border:1px solid #ccc;border-right:none;background:#EDFAF5;}#vk li.last{border-right:1px solid #ccc;background:#EDFAF5;}#vkhide{border:none;}#vk li.vk-active{background:#8CD9B3;background:white;border-bottom:none;}#vk li.vk-active a{xcolor:#8CD9B3;font-weight:bold;}#epa a.active{color:#000;}.person li{xpadding:0 0 0 20px;xmargin:0;}.node ul li{list-style-type:circle;}li.bukva{position:relative;padding:0px 0px 0 0;color:#aaa;margin-top:2em;}#bag{position:absolute;top:0;left:0;margin:0;padding:0;height:100%;width:100%;min-width:100%;z-index:0;}#pysh{position:relative;top:0;margin:0 auto;padding:0;height:100%;width:980px;z-index:0;background:url(/sites/all/themes/sfu_math/img/bg2.gif) repeat-y 0 0;}div.right{float:right;}div.left{float:left;}div.left img{xmarging-right:15px;}.person h3{xfont-weight:bold;}li{}div.attachments,.attachments fieldset{width:600px;max-width:600px;}#my-node-form fieldset{position:relative;display:block;z-index:30;}#edit-title{width:600px;}a.plusminus{background:url(/sites/all/themes/sfu_math/img/plus.gif) left no-repeat;padding-left:15px;}a.minusplus{background:url(/sites/all/themes/sfu_math/img/minus.gif) left no-repeat;padding-left:15px;}.feed-icon img{margin:5px 0px 5px 5px;float:right;}
+.more-link{text-align:left;float:left;background:url(/sites/all/themes/sfu_math/img/plus.gif) left no-repeat;padding-left:15px !important;margin-bottom:2em;margin-top:1em;}
+
+.block-user .item-list h3{display:none;}#block-user-3 h2,#block-user-3 .content{margin-left:12px;}#block-user-3 li{margin:0 0 5px 0;padding:0;}.block h2{font-size:150%;margin-top:5px;}
+
+#block-views-comments_recent-block ul,#block-views-comments_recent-block li{margin-left:0 !important;padding-left:0 !important;}#block-views-comments_recent-block{padding-top:2em;}#block-views-comments_recent-block .more-link{margin-top:0;}.view-comments-recent ul,.view-comments-recent li{margin-left:0 !important;padding-left:0 !important;}.view-comments-recent .views-field-title{font-weight:bold;}.views-field-title{display:block;}x.views-field-title,.views-field-timestamp,.views-field-name{display:inline;}
+
+#vkl2 ul.person,#vkl2 ul.person li{margin-left:0;padding-left:0;}
+
+.view-updates th{white-space:nowrap;}.view-updates .new-comments{color:red !important;}
+
+#block-block-3 a{text-decoration:underline;margin-left:1em;}
+
+div.indented.answer{background:none;}div.indented.answer .submitted{padding-left:15px;padding-top:0px;margin-top:0.7em;background:url(/sites/all/modules/anteroom/arrow.gif) 0px -2px no-repeat;display:block;}
+
+body .ru_share{float:left;}.node-links-table *{padding:0;margin:0;}.node-links-table{margin:0;}
+
+.view-struct ul li,.quick-links li{background:url(/sites/all/themes/sfu_math/images/menu-collapsed.png) no-repeat 0px 6px;padding-left:16px;}

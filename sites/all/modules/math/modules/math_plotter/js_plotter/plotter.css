@@ -1,0 +1,22 @@
+@import "../../math_calc/js_cmd/cmd.css";
+
+canvas {
+   float: left;
+   margin-top: 0.5em;
+   border: 1px solid #ddd;
+}
+
+#cmd-history {
+   width: 170px;
+   float: left;
+   margin-left: 0.5em;
+}
+
+.plot-controls {
+   position: absolute;
+   z-index: 100;
+}
+
+.plot-controls a, .plot-controls a:hover {
+   text-decoration: none;
+}

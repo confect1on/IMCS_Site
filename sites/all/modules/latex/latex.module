@@ -1,0 +1,69 @@
+<?php
+
+function latex_init() {
+	drupal_add_css(drupal_get_path('module', 'latex') . '/latex.css');
+}
+
+function _latex_mimetex_exec($tex_file, $gif_file) {
+	$mimetex = drupal_get_path('module', 'latex') . '/mimetex/';
+	switch (PHP_OS) {
+		case 'Linux'   : $mimetex .= 'mimetex.linux'; break;
+		case 'Darwin'  : $mimetex .= 'mimetex.darwin'; break;
+		case 'FreeBSD' : $mimetex .= 'mimetex.freebsd'; break;
+		default        : $mimetex = str_replace('/', '\\', $mimetex . 'mimetex.exe');
+	}
+	system("$mimetex -e $gif_file -f $tex_file");
+}
+
+function _latex_filter_callback($matches) {
+	// create dir
+	$files_path = file_directory_path() . '/latex';
+	@mkdir($files_path);
+	// choose filename
+	$expr = base64_decode($matches[1]);
+	$filename = md5($expr);
+	$tex_file = "$files_path/${filename}.tex";
+	$gif_file = "$files_path/${filename}.gif";
+	$collisions = 0;
+	while (file_exists($gif_file) && $expr != @file_get_contents($tex_file)) {
+		$collisions++;
+		$new_filename = "${filename}_${collisions}";
+		$tex_file = "$files_path/${new_filename}.tex";
+		$gif_file = "$files_path/${new_filename}.gif";
+	}
+	if ($new_filename != '') $filename = $new_filename;
+	// render gif
+	if (!file_exists($gif_file)) {
+		file_put_contents($tex_file, $expr);
+		_latex_mimetex_exec($tex_file, $gif_file);
+	}
+	// render <img>
+	return '<img class="latex" src="' . file_create_url("latex/${filename}.gif") . '" alt="" />';
+}
+
+function _latex_filter_prepare_callback($matches) {
+	return '$$$base64:' . base64_encode($matches[1]) . '$$$';
+}
+
+function latex_filter($op, $delta = 0, $format = -1, $text = '', $cache_id = 0) {
+	switch ($op) {
+		case 'list':
+			return array(0 => t('LaTeX filter'));
+		case 'prepare':
+			return preg_replace_callback('/\$\$(.*?)\$\$/', '_latex_filter_prepare_callback', $text);
+		case 'process':
+			return preg_replace_callback('/\$\$\$base64:(.*?)\$\$\$/', '_latex_filter_callback', $text);
+		default:
+			return $text;
+	}
+}
+
+function latex_filter_tips($delta, $format, $long = FALSE) {
+	return t('Use syntax $$latex$$ to insert LaTeX formulas.');
+}
+
+function latex_file_download($filepath) {
+	if (substr($filepath, 0, 6) == 'latex/' && substr($filepath, -4) == '.gif') {
+		return array('Content-type: image/gif');
+	}
+}

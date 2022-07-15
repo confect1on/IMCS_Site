@@ -1,0 +1,39 @@
+.cmd-history-item {
+   margin-bottom: 0.5em;
+}
+
+.cmd-history-input, .cmd-history-output {
+   cursor: hand;
+   cursor: pointer;
+}
+
+.cmd-history-output-number {
+   font-weight: bold;
+}
+
+.cmd-history-output-string {
+   color: red;
+}
+
+#cmd-history {
+   height: 20em;
+   overflow: auto;
+   border: 1px solid #ddd;
+   padding: 3px 5px;
+   position: relative;
+   margin-top: 0.5em;
+}
+
+#cmd-clear-history {
+   float: right;
+   position: absolute;
+   top: 0px;
+   right: 1px;
+   background: white;
+   padding: 0px 2px 2px 4px;
+   text-decoration: none;
+}
+
+#cmd-clear-history:hover {
+   text-decoration: none;
+}

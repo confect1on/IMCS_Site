@@ -1,0 +1,10 @@
+<br />
+<b>Warning</b>:  filesize() [<a href='function.filesize'>function.filesize</a>]: stat failed for attach/exam_list2008.xls. in <b>/hosts/math/htdocs/controllers/attach.php</b> on line <b>38</b><br />
+<br />
+<b>Warning</b>:  Cannot modify header information - headers already sent by (output started at /hosts/math/htdocs/controllers/attach.php:38) in <b>/hosts/math/htdocs/controllers/attach.php</b> on line <b>38</b><br />
+<br />
+<b>Warning</b>:  fopen(attach/exam_list2008.xls.) [<a href='function.fopen'>function.fopen</a>]: failed to open stream: No such file or directory in <b>/hosts/math/htdocs/controllers/attach.php</b> on line <b>39</b><br />
+<br />
+<b>Warning</b>:  filesize() [<a href='function.filesize'>function.filesize</a>]: stat failed for attach/exam_list2008.xls. in <b>/hosts/math/htdocs/controllers/attach.php</b> on line <b>39</b><br />
+<br />
+<b>Warning</b>:  fread(): supplied argument is not a valid stream resource in <b>/hosts/math/htdocs/controllers/attach.php</b> on line <b>39</b><br />
