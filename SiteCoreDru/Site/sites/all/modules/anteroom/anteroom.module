@@ -1,0 +1,569 @@
+<?php
+/*
++ сделать свою функцию добавления комментария, т.к. эта проверяет левые права (нужно контролировать, что если у юзера есть ask questions in anteroom, то должно быть и post comments)
++ добавить проверку отправленного вопроса
++ метод постинга ответов
++ отправка почты
+		+ админам при добавлении вопроса
+		+ автору вопроса при добавлении ответа
++ в форме скрывать поля имя и мейл для зарегенных юзеров (вместо них вывести l('/user/'.$user->uid, $user->name))
++ постраничный просмотр
++ отключить в форме ноды приемной раздел о комментариях
++ фильтр ввода
++ контроль доступа при сохранении коммента (доступ к фильтру уже проверяется) (через hook-menu)
+- перехватывать любую попытку редактировать комменты в приемной
+- перехватывать попытку ответить на коммент снаружи (да и изнутри, можно так же передать идентификатор странице обработчику и она даже не залупится)
++ проверить вывод юзеринфо (особенно электронной почты), для анонимусов
++ форма редактирования
++ форма удаления трейда
++ по хорошем - восстановить метод коллапсибле
++ при редактировании поля пользователя?!?!?!
++ функции вывода страниц с формами перенести в файл темы и прописать в hook_theme
++ слить функции подготовки и сохранении комментов (anteroom_add_question() и anteroom_comment_save())
+*/
+
+function anteroom_node_info() {
+	return array(
+		'anteroom' => array(
+			'name' => 'Общественная приемная',
+			'module' => 'anteroom',
+			'description' => 'Создать общественную приемну',
+			'has_title' => TRUE,
+			'title_label' => t('Title'),
+			'has_body' => TRUE,
+			'body_label' => t('Body'),
+		)
+	);
+}
+
+function anteroom_perm() {
+	return array(
+		'create anteroom',
+		'edit own anteroom content',
+		'edit any anteroom content',
+		'delete own anteroom content',
+		'delete any anteroom content',
+		'view anteroom',
+
+		'ask anteroom questions',
+		'answer on questions in own anteroom',
+		'answer on questions in any anteroom',
+		'adminster anteroom',
+	);
+}
+
+function anteroom_access($op, $node, $account) {
+	if ($op == 'create') {
+		return user_access('create anteroom', $account);
+	}
+
+	if ($op == 'view') {
+		return user_access('view anteroom', $account);
+	}
+
+	if ($op == 'update') {
+		if ((user_access('edit own anteroom content', $account) && $node->uid == $account->uid) || user_access('edit any anteroom content', $account)) {
+			return TRUE;
+		}
+	}
+
+	if ($op == 'delete') {
+		if ((user_access('delete own anteroom content', $account) && $node->uid == $account->uid) || user_access('delete any anteroom content', $account)) {
+			return TRUE;
+		}
+	}
+}
+
+//проверка, доступны ли пользователю функции управления вопросами
+function anteroom_answer_access($node) {
+	if (is_numeric($node)) $node = node_load($node);
+
+	return ((user_access('answer on questions in own anteroom') && node_access('update', $node)) || user_access('answer on questions in any anteroom') || user_access('adminster anteroom'));
+}
+
+function anteroom_menu() {
+	$items = array();
+
+	//обработчик формы добавления комментария
+	$items['anteroom/add/question'] = array(
+		'title' => 'Добавить вопрос',
+		'page callback' => 'anteroom_add_question',
+		'access arguments' => array('ask anteroom questions'),
+		'type' => 'MENU_CALLBACK',
+	);
+	//форма добавления коммента
+	$items['anteroom/comment/add/%node'] = array(
+		'title' => 'Ответить на вопрос',
+		'page callback' => 'theme',
+		'page arguments' => array('anteroom_comment_add', 4),
+		'access callback' => 'anteroom_answer_access',
+		'access arguments' => array(3),
+		'type' => 'MENU_CALLBACK',
+	);
+	//форма редактирования коммента
+	$items['anteroom/comment/edit'] = array(
+		'title' => 'Изменить',
+		'page callback' => 'theme',
+		'page arguments' => array('anteroom_comment_edit', 3),
+		'access callback' => 'anteroom_answer_access',
+		'access arguments' => array(3),
+		'type' => 'MENU_CALLBACK',
+	);
+	//форма удаления коммента
+	$items['anteroom/comment/delete'] = array(
+		'title' => 'Удалить',
+		'page callback' => 'theme',
+		'page arguments' => array('anteroom_comment_confirm_delete', 3),
+		'access callback' => 'anteroom_answer_access',
+		'access arguments' => array(2),
+		'type' => 'MENU_CALLBACK',
+	);
+	//обработчик удаления коммента
+	$items['anteroom/comment/delete/submit'] = array(
+		'title' => 'Удалить',
+		'page callback' => 'anteroom_comment_confirm_delete_submit',
+		'access callback' => 'anteroom_answer_access',
+		'access arguments' => array(4),
+		'type' => 'MENU_CALLBACK',
+	);
+
+	return $items;
+}
+
+function anteroom_theme($existing, $type, $theme, $path) {
+	return array(
+		'anteroom_view_questions'	=> array(
+			'function'	=> 'theme_anteroom_view_comments',
+			'arguments'	=> array($cid => NULL),
+			'file'		=> 'anteroom.theme.inc',
+		),
+		//страница формы создания коммента
+		'anteroom_comment_add'	=> array(
+			'function'	=> 'theme_anteroom_comment_add',
+			'file'		=> 'anteroom.theme.inc',
+		),
+		//страница формы редактирования коммента
+		'anteroom_comment_edit'	=> array(
+			'function'	=> 'theme_anteroom_comment_edit',
+			'file'		=> 'anteroom.theme.inc',
+		),
+		//страница формы подтверждения удаления
+		'anteroom_comment_confirm_delete'	=> array(
+			'function'	=> 'theme_anteroom_comment_confirm_delete',
+			'file'		=> 'anteroom.theme.inc',
+		),
+	);
+}
+
+function anteroom_form(&$node, $form_state) {
+	$type = node_get_types('type', $node);
+	$form['title'] = array(
+		'#type'=> 'textfield',
+		'#title' => check_plain($type->title_label),
+		'#required' => TRUE,
+		'#default_value' => $node->title,
+		'#weight' => -100,
+	);
+	$form['body'] = array(
+		'#type' => 'textarea',
+		'#title' => check_plain($type->body_label),
+		'#rows' => 20,
+		'#required' => TRUE,
+		'#default_value' => $node->body,
+		'#weight' => -5,
+	);
+	$form['body_filter']['filter'] = filter_form($node->format);
+	$form['anteroom_respondents'] = array(
+		'#type' => 'textarea',
+		'#title' => 'Список рассылки для уведомлений о новых вопросах',
+		'#rows' => 7,
+		'#description' => 'Вводите по одному e-mail адресу в строку.',
+		'#required' => FALSE,
+		'#default_value' => $node->anteroom_respondents,		//если пусто - брать дефолтовое значение из настроек
+		'#weight' => -4,
+	);
+	return $form;
+}
+
+/****************************************************/
+/*			Обработчики контент-тайпа anteroom		*/
+/****************************************************/
+
+function anteroom_insert($node) {
+	db_query("INSERT INTO {anteroom} (nid, vid, respondents) VALUES (%d, '%s', '%s')", $node->nid, $node->vid, $node->anteroom_respondents);
+}
+
+function anteroom_update($node) {
+	if ($node->revision) {
+		anteroom_insert($node);
+	} else {
+		db_query("UPDATE {anteroom} SET respondents = '%s' WHERE vid = %d", $node->anteroom_respondents, $node->vid);
+	}
+}
+
+function anteroom_delete(&$node) {
+	db_query('DELETE FROM {anteroom} WHERE nid = %d', $node->nid);
+}
+
+function anteroom_load($node) {
+	return db_fetch_object(db_query('SELECT respondents AS anteroom_respondents FROM {anteroom} WHERE vid = %d', $node->vid))	;
+}
+
+function anteroom_validate($node, &$form) {
+	if (!empty($node->anteroom_respondents)) {
+		$mails = split("\n", $node->anteroom_respondents);
+		foreach ($mails as $mail) {
+			$mail = trim($mail);
+			if (!valid_email_address($mail)) $bad_mails[] = $mail;
+		}
+		if (sizeof($bad_mails) > 0) {
+			form_set_error('anteroom_respondents', join(', ', $bad_mails)." - не являются адресами электронной почты.");
+		}
+	}
+}
+
+function anteroom_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL) {
+	switch ($op) {
+		case 'delete revision':
+			db_query('DELETE FROM {anteroom} WHERE vid = %d', $node->vid);
+			break;
+	}
+}
+
+function anteroom_view($node, $teaser = FALSE, $page = FALSE) {
+	global $user;
+	if (!user_access('view anteroom') || ($node->status == 0 && !node_access('update', $node))) {
+		drupal_access_denied();
+		exit;
+	}
+
+	drupal_add_css(drupal_get_path('module', 'anteroom') . '/anteroom.css');
+	drupal_add_js(drupal_get_path('module', 'anteroom').'/anteroom.js');
+
+	$node->comment = 0;
+	$node = node_prepare($node, $teaser);
+
+	if ($page) {
+		//форма добавления вопроса
+		if (user_access('ask anteroom questions') && user_access('post comments')) {
+			$node->content['anteroom_comment_form'] = array(
+				'#value' => '<h3>Задайте Ваш вопрос</h3>'.drupal_get_form('anteroom_comment_form', array('nid' => $node->nid)), 
+				'#weight' => '100'
+			);
+		} else {
+			drupal_set_message('Для того, чтобы задать вопрос в общественной приемной <a href="/user?destination=node/'.$node->nid.'">авторизуйтесь на сайте</a>.', 'error'); 
+		}
+
+		//просмотр вопросов
+		$node->content['questions'] = array(
+			'#value' => theme(anteroom_view_questions, $node),
+			'#weight' => 200,
+		);
+	}
+	return $node;
+}
+
+//выпиливаем раздел настроек комментов со строницы приемной
+function anteroom_form_alter(&$form, &$form_state, $form_id) {
+	if ($form_id == 'anteroom_node_form') {
+		unset($form['comment_settings']);
+	}
+}
+
+//добавляем ajax-wrapper
+function anteroom_preprocess_comment(&$variables) {
+	$variables['content'].="</div><div class='ajax_wrapper'>";
+}
+
+/****************************************************/
+/*						Формы						*/
+/****************************************************/
+
+function anteroom_comment_form(&$form_state, $comment = null) {
+	//form_state нахрен не упал, но drupal_get_form туда его вставляет принудительно и первым аргументом ничего не передать
+	global $user;
+
+	$form['#action'] = url('anteroom/add/question');
+	$form['anteroom_comment_form'] = array(
+		'#type' => 'fieldset',
+		'#title' => 'Комментарий',
+		);
+	$form['anteroom_comment_form']['nid'] = array (
+		'#type' => 'hidden',
+		'#value' => $comment['nid'],
+		);
+	$form['anteroom_comment_form']['cid'] = array (
+		'#type' => 'hidden',
+		'#value' => (int)$comment['cid'],
+		);
+	$form['anteroom_comment_form']['pid'] = array (
+		'#type' => 'hidden',
+		'#value' => (int)$comment['pid'],
+		);
+	if ($user->uid == 0) {
+		$form['anteroom_comment_form']['name'] = array(
+			'#type'=> 'textfield',
+			'#title' => 'Ваше имя',								//если зарегенный узер, то надо его инфу ставить
+			'#required' => FALSE,
+			'#default_value' => $comment['name'],
+		);
+		$form['anteroom_comment_form']['mail'] = array(
+			'#type'=> 'textfield',
+			'#title' => 'E-mail',
+			'#required' => FALSE,
+			'#default_value' => $comment['mail'],
+		);
+	} else {
+		$form['anteroom_comment_form']['uid'] = array(
+			'#type'=> 'hidden',
+			'#required' => true,
+			'#default_value' => $user->uid,
+			'#prefix' => "<strong>Ваше имя:</strong> ".l($user->name, "user/{$user->uid}"),
+		);
+	}
+	$form['anteroom_comment_form']['comment_filter']['comment'] = array(
+		'#type' => 'textarea',
+		'#title' => $comment['pid'] ? 'Ответ' : 'Вопрос',
+		'#rows' => 10,
+		'#required' => TRUE,
+		'#default_value' => $comment['comment'],
+	);
+	//filter
+	if (!isset($comment['format'])) {
+		$comment['format'] = FILTER_FORMAT_DEFAULT;
+	}
+	$form['anteroom_comment_form']['comment_filter']['format'] = filter_form($comment['format']);
+	if ($_REQUEST['ajax']) {
+		$form['anteroom_comment_form']['comment_filter']['format']['#collapsible'] = 0;
+	}
+
+	$form['anteroom_comment_form']['submit'] = array(
+		'#type' => 'submit', 
+		'#value' => $comment['pid'] ? 'Отправить ответ' : 'Отправить вопрос',
+	);
+	if ($_REQUEST['ajax']) {
+		$form['anteroom_comment_form']['cancel'] = array(
+			'#type' => 'button', 
+			'#value' => 'Отмена',
+			'#name' => 'cancel',
+			'#attributes' => array('onClick' => 'anteroom_comment_cancel(); return false;'),
+		);
+	}
+	return $form;
+}
+
+//Форма подтверждения удаления коммент-ветки
+function anteroom_comment_delete_form(&$form_state, $comment = null) {
+	$form['#action'] = url('anteroom/comment/delete/submit/'.$comment['cid']);
+	$form['anteroom_comment_form'] = array(
+		'#type' => 'fieldset',
+		'#title' => 'Удалить',
+		'#description' => 'Вы действительно хотите удалить ветвь комментариев (будет удален и вопрос, и ответ)?<br />Внимание, данное действие нельзя будет отменить!',
+		);
+	$form['anteroom_comment_form']['cid'] = array (
+		'#type' => 'hidden',
+		'#value' => (int)$comment['cid'],
+		);
+	$form['anteroom_comment_form']['submit'] = array(
+		'#type' => 'submit', 
+		'#value' => t('Delete'),
+	);
+	if ($_REQUEST['ajax']) {
+		$form['anteroom_comment_form']['cancel'] = array(
+			'#type' => 'button', 
+			'#value' => t('Cancel'),
+			'#name' => 'cancel',
+			'#attributes' => array('onClick' => 'anteroom_comment_cancel(); return false;'),
+		);
+	}
+	return $form;
+}
+
+/********************************************************/
+/*					Обработчики форм					*/
+/********************************************************/
+
+//функция сохранения комментария общественной приемной
+function anteroom_add_question() {
+	global $user;
+	$comment = array(
+		'uid' => $user->uid,
+		'nid' => $_POST['nid'],
+		'cid' => $_POST['cid'],
+		'pid' => $_POST['pid'],
+		'name' => $user->uid == 0 ? $_POST['name'] : $user->name,
+		'mail' => $user->uid == 0 ? $_POST['mail'] : $user->mail,
+		'comment' => $_POST['comment'],
+		'format' => filter_formats($_POST['format']) ? $_POST['format'] : FILTER_FORMAT_DEFAULT,
+		);
+	if (empty($comment['comment'])) {
+		form_set_error('comment', 'Вы не задали вопрос.');
+		return drupal_get_form('anteroom_comment_form', $comment); 
+	}
+
+	// проверка математической капчи
+	if (!user_access('skip CAPTCHA')) {
+		$csid = $_POST['captcha_sid'] + 0;
+		if ($_POST['captcha_response'] == '' || !$csid) {
+			form_set_error('captcha_response', 'Решите математическую задачу.');
+			return drupal_get_form('anteroom_comment_form', $comment); 
+		}
+		else {
+			$solution = db_result(db_query('SELECT solution FROM {captcha_sessions} WHERE csid = %d AND status = %d', $csid, CAPTCHA_STATUS_UNSOLVED));
+			if ($solution != $_POST['captcha_response']) {
+				form_set_error('captcha_response', 'Ошибка в решении математической задачи.');
+				return drupal_get_form('anteroom_comment_form', $comment); 
+			}
+		}
+	}
+
+	anteroom_comment_save($comment);
+	drupal_goto('node/'.$comment['nid']);
+}
+
+// замена comment_save
+// переписано, дабы не проверяло левые права и не добавляло ненужное сообщение drupal_set_message
+function anteroom_comment_save($edit) {
+	global $user;
+	if (user_access('ask anteroom questions') || anteroom_answer_access($edit->nid)) {
+		if (!form_get_errors()) {
+			$edit += array(
+				'mail' => '',
+				'homepage' => '',
+				'name' => '',
+			);
+
+			//обновление комментария
+			if ($edit['cid']) {
+				db_query("UPDATE {comments} SET subject = '%s', comment = '%s', format = %d WHERE cid = %d", $edit['subject'], $edit['comment'], $edit['format'], $edit['cid']);
+
+				comment_invoke_comment($edit, 'update');
+				watchdog('content', 'Comment: updated %subject.', array('%subject' => $edit['subject']), WATCHDOG_NOTICE, l(t('view'), 'node/'. $edit['nid'], array('fragment' => 'comment-'. $edit['cid'])));
+			} 
+			//сохранение нового комментария
+			else { 
+				if ($edit['pid'] != 0 && anteroom_answer_access($edit->nid)) {
+					$edit['status'] = COMMENT_PUBLISHED;
+
+					//загружаем родительский комментарий
+					$parent = _comment_load($edit['pid']);
+
+					// удаляем "/" с конца идентификатора родительской ветки
+					$parent->thread = (string) rtrim((string) $parent->thread, '/');
+
+					// получаем максимальный айдишник в родительской ветке
+					$max = db_result(db_query("SELECT MAX(thread) FROM {comments} WHERE thread LIKE '%s.%%' AND nid = %d", $parent->thread, $edit['nid']));
+
+					if ($max == '') {
+						// Это первый потомок у этого родителя
+						$thread = $parent->thread .'.'. int2vancode(0) .'/';
+					} else {
+						// удаляем "/" с конца идентификатора ветки
+						$max = rtrim($max, '/');
+
+						// нужно получить корректное значение глубины
+						$parts = explode('.', $max);
+						$parent_depth = count(explode('.', $parent->thread));
+						$last = $parts[$parent_depth];
+
+						// Создаем корректное значение идентификатора ветки нового комментария
+						$thread = $parent->thread .'.'. int2vancode(vancode2int($last) + 1) .'/';
+					}
+				} else {
+					$edit['status'] = COMMENT_NOT_PUBLISHED;		//все вопросы изначально не опубликованы
+					$max = db_result(db_query('SELECT MAX(thread) FROM {comments} WHERE nid = %d', $edit['nid']));	//берем максимальный номер ветки
+					$max = rtrim($max, '/');	//убираем слеш с конца идентификатора ветки
+					$thread = int2vancode(vancode2int($max) + 1) .'/';	//генерируем идентификатор следующей ветки
+				}
+
+				if (empty($edit['timestamp'])) {
+					$edit['timestamp'] = time();
+				}
+
+				if ($edit['uid'] === $user->uid && isset($user->name)) { // '===' нужен, т.к. анонимус имеет айдишник 0
+					$edit['name'] = $user->name;
+				}
+				
+				db_query("INSERT INTO {comments} (nid, pid, uid, subject, comment, format, hostname, timestamp, status, thread, name, mail, homepage) VALUES (%d, %d, %d, '%s', '%s', %d, '%s', %d, %d, '%s', '%s', '%s', '%s')", $edit['nid'], $edit['pid'], $edit['uid'], $edit['subject'], $edit['comment'], $edit['format'], ip_address(), $edit['timestamp'], $edit['status'], $thread, $edit['name'], $edit['mail'], $edit['homepage']);
+				$edit['cid'] = db_last_insert_id('comments', 'cid');
+
+
+				if ($edit['pid']) {
+					//если это ответ, то публикуем вопрос
+					db_query('UPDATE {comments} SET status=%d WHERE cid=%d', COMMENT_PUBLISHED, $parent->cid);
+				}
+
+				//емеил с уведомление
+				anteroom_notify($edit);
+
+				comment_invoke_comment($edit, 'insert');
+				watchdog('content', 'Comment: added %subject.', array('%subject' => $edit['subject']), WATCHDOG_NOTICE, l(t('view'), 'node/'. $edit['nid'], array('fragment' => 'comment-'. $edit['cid'])));
+			}
+			
+			_comment_update_node_statistics($edit['nid']);	//обновление коммент-статистики ноды
+			cache_clear_all();
+
+			if ($edit['status'] == COMMENT_NOT_PUBLISHED) {
+				drupal_set_message('Ваш вопрос добавлен в очередь на обработку. Если вы указали свой e-mail, то после публикации ответа вам будет выслано уведомление.');
+			}
+			else {
+				comment_invoke_comment($edit, 'publish');
+			}
+			return $edit['cid'];
+		} else {
+			return FALSE;
+		}
+	} else {
+		watchdog('content', 'Comment: unauthorized comment submitted or comment submitted to a closed post %subject.', array('%subject' => $edit['subject']), WATCHDOG_WARNING);
+		drupal_set_message('У вас нет прав на добавления вопросов.', 'error');
+		return FALSE;
+	}
+}
+
+//функция удаления ветки комментариев (обработчик формы удаления)
+function anteroom_comment_confirm_delete_submit($cid) {
+	$comment = _comment_load((int)$_POST['cid']);
+	while ($comment->pid) {
+		$comment = _comment_load($comment->pid);
+	}
+	$nid = $comment->nid;
+	module_load_include('inc', 'comment', 'comment.admin');
+	_comment_delete_thread($comment);
+	drupal_set_message('Комментарии удалены.', 'message');
+	drupal_goto('node/'.$nid);
+}
+
+//функция уведомления по электронной почте
+function anteroom_notify($question) {
+	$node = node_load($question['nid']);
+	$mails = split("\n", $node->anteroom_respondents);
+	$user = $question['uid'] ? l($question['name'], 'user/'.$question['uid'], $optiony = array('absolute' => true)) : $question['name'];
+
+	$message_body = array(
+		($question['pid'] ? 'На ваш вопрос ответили' : 'Вам задан вопрос в общественной приемной'),
+		'<div style="border: 1px solid #ccc; background-color: #eee; padding: 0 15px;">',
+		($question['pid'] ? 'Ответил: ' : 'Вопрос задал: ').$user." в ".date("H:i d.m.Y", $question['timestamp']),
+		check_markup($question['comment'], $question['format']),
+		'</div>',
+		"Подробности: ".l($node->title, 'node/'.$node->nid, $optiony = array('fragment' => 'comment-'.$question['cid'], 'absolute' => true)), 
+	);
+	$message = array(
+		'headers' => array(
+			'from' => variable_get('site_mail', ''),
+			'Content-Type' => 'text/html; charset=koi8-r'
+		),
+		'subject' => variable_get('site_name', 'Вам задан вопрос в общественной приемной'),
+		'body' => mb_convert_encoding(join("<br />", $message_body), "koi8-r", "UTF-8"),
+	);
+
+	if ($question['pid'] == 0) {
+		foreach ($mails as $mail) {
+			$message['to'] = trim($mail);
+			drupal_mail_send($message);
+		}
+	} else {
+		$q = _comment_load($question['pid']);
+		$message['to'] = $q->mail;
+		drupal_mail_send($message);
+	}
+}

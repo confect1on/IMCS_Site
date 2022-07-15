@@ -1,0 +1,66 @@
+<?php
+
+function math_plotter_menu() {
+   $items['math/plotter'] = array(
+       'title' => 'Plotter',
+       'page callback' => '_math_plotter_page',
+       'access arguments' => array('access math services'),
+       'weight' => 20,
+   );
+   $items['math/plotter/view'] = array(
+       'title' => 'View',
+       'type' => MENU_DEFAULT_LOCAL_TASK,
+       'weight' => 1,
+   );
+   $items['math/plotter/help'] = array(
+       'title' => 'Help',
+       'page callback' => '_math_plotter_help_page',
+       'access arguments' => array('access math services'),
+       'type' => MENU_LOCAL_TASK,
+       'weight' => 2,
+   );
+
+   // ajax
+   $items['math/plotter/add-history'] = array(
+       'page callback' => '_math_calc_add_history',
+       'page arguments' => array('math_plotter_history'),
+       'access arguments' => array('access math services'),
+       'type' => MENU_CALLBACK,
+   );
+   $items['math/plotter/clear-history'] = array(
+       'page callback' => '_math_calc_clear_history',
+       'page arguments' => array('math_plotter_history'),
+       'access arguments' => array('access math services'),
+       'type' => MENU_CALLBACK,
+   );
+
+   return $items;
+}
+
+function _math_plotter_page() {
+   $path = drupal_get_path("module", "math_plotter");
+   drupal_add_css("$path/js_plotter/plotter.css");
+   drupal_add_css("$path/math_plotter.css");
+   drupal_add_js("$path/js_plotter/plotter.js");
+   drupal_add_js("$path/math_plotter.js");
+   $GLOBALS['math_plotter_build_form'] = true;
+   $output = drupal_get_form('math_calc_form', 'function', 'Plot', 'math_plotter_history');
+   $GLOBALS['math_plotter_build_form'] = false;
+   return $output;
+}
+
+function math_plotter_form_alter(&$form, &$form_state, $form_id) {
+   if ($form_id == 'math_calc_form' && $GLOBALS['math_plotter_build_form']) {
+      $form['cmd-history']['#prefix'] = "<br /><canvas width='500' height='500'></canvas>";
+   }
+}
+
+function _math_plotter_help_page() {
+   $header = array(t("Examples"));
+   $data[] = array("x*x");
+   $data[] = array("x*sin(x)");
+   $data[] = array("2^(x/10)*sin(x)");
+   $output .= theme("table", $header, $data);
+   $output .= _math_calc_help_page();
+   return $output;
+}

@@ -1,0 +1,4 @@
+name=sfu_search
+core=6.x
+package=СФУ
+description=Мета-теги для поисковика.

@@ -1,0 +1,55 @@
+<?php
+
+/**
+ * TODO:* сделать главную страницу исходя из того, что меню слева не будет
+ * TODO:* демо модуль + инструкция
+ * TODO:* загрузить на bitbucket
+ * TODO:* блок для быстрого доступа к основным функциям
+ * TODO:* странно масштабируется 1/x
+ * TODO:* выводить x1,y1,x2,y2
+ * TODO:* перевод текста в JS
+ *
+ * TODO: удаление отдельных пунктов истории
+ * TODO: настройка: длина истории
+ * TODO: настройка: размер canvas для графиков
+ */
+
+function _math_d($var, $uid = 1) {
+   if ($GLOBALS['user']->uid == $uid) {
+      drupal_set_message('<pre>' . print_r($var, true) . '</pre>');
+   }
+}
+
+function math_perm() {
+   return array('access math services');
+}
+
+function math_menu() {
+   $items['math'] = array(
+       'title' => 'Math services',
+       'page callback' => '_math_page',
+       'access arguments' => array('access math services'),
+   );
+   return $items;
+}
+
+function _math_page() {
+   $services = array();
+   $output = '';
+
+   $menu = menu_tree_page_data(menu_get_active_menu_name());
+   foreach ($menu as $menu_item) {
+      if ($menu_item['link']['link_path'] == 'math' && $menu_item['below']) {
+         foreach ($menu_item['below'] as $service) {
+            $services[] = $service['link'];
+         }
+      }
+   }
+
+   if (empty($services)) {
+      drupal_set_message('No one math modules is enabled.', 'error');
+   } else {
+      drupal_goto($services[0]['link_path']);
+   }
+   return $output;
+}

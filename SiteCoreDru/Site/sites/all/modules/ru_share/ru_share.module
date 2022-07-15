@@ -1,0 +1,175 @@
+<?php
+
+function ru_share_nodeapi(&$node, $op, $teaser = NULL, $page = NULL) {
+	if ($op == 'view' && ($teaser && variable_get("ru_share_teaser_$node->type", 0) || !$teaser && variable_get("ru_share_full_$node->type", 0))) {
+		$node->content['ru_share'] = array(
+			'#weight' => 100,
+			'#value' => ru_share($node),
+		);
+	}
+}
+
+function ru_share($node, $text = '', $like = -1) {
+	static $likes;
+    drupal_add_css(drupal_get_path('module', 'ru_share') . '/ru_share.css');
+	$text = trim($text == '' ? $node->body : $text);
+
+	// список сервисов
+	$shares = array();
+	if (variable_get("ru_share_lj", 1)) {
+		$shares['lj'] = array(
+			'icon'  => 'lj.png',    
+			'title' => 'написать в LiveJournal', 
+			'link'  => 'http://www.livejournal.com/update.bml?subject=&event=%fulltext'
+		);
+	}
+	if (variable_get("ru_share_vk", 1)) {
+		$shares['vk'] = array(
+			'icon'  => 'vk.png',
+			'title' => 'написать ВКонтакте',
+			'link'  => 'http://vkontakte.ru/share.php?url=%url&title=%title', 
+			'size'  => 'width=500,height=350'
+		);
+	}
+	if (variable_get("ru_share_twitter", 1)) {
+		$shares['twitter'] = array(
+			'icon'  => 'twitter.png', 
+			'title' => 'написать в Twitter', 
+			'link'  => 'http://twitter.com/share?url=%url&text=%title',
+			'size'  => 'width=500,height=300'
+		);
+	}
+	if (variable_get("ru_share_fb", 1)) {
+		$shares['fb'] = array(
+			'icon'  => 'fb.png', 
+			'title' => 'написать в Facebook',
+			'link'  => 'http://www.facebook.com/sharer.php?u=%url&t=%title',
+			'size'  => 'width=600,height=450'
+		);
+	}
+	if ($shares['lj'] && strstr(@$_SERVER['HTTP_USER_AGENT'], 'MSIE')) {
+		$shares['lj']['link'] = 'http://www.livejournal.com/update.bml?subject=&event=%title%0A%url%0A%0A';
+	}
+	
+	// url
+	$absolute_url = url("node/$node->nid", array('absolute' => TRUE));
+	$site_name = variable_get('site_name', '');
+	$title = "$site_name: " . str_replace('&nbsp;', ' ', $node->title);
+
+	// fulltext
+	$max_len = 1000; $min_text_len = 50;
+	$text_prefix = "<div style='padding:0px 10px;border:2px solid #dadee1;'><h3><a href='$absolute_url'>$title</a></h3>";
+	$fulltext = $text;
+	$text_suffix = "<p><a href='$absolute_url'>Полный текст</a></p>" . "</div>\n";
+	if (drupal_strlen($text_prefix . $fulltext . $text_suffix) > $max_len) {
+		$fulltext = truncate_utf8($fulltext, max($min_text_len, $max_len - drupal_strlen($text_prefix) - drupal_strlen($text_suffix)), TRUE, TRUE);
+	}
+	$fulltext = $text_prefix . $fulltext . $text_suffix;
+
+	// plaintext
+	$plaintext = preg_replace("/\s+/", ' ', strip_tags($text));
+	if (drupal_strlen($plaintext) > $max_len) {
+		$plaintext = truncate_utf8($plaintext, $max_len, TRUE, TRUE);
+	}
+
+	// все переменные
+	$shares_vars = array(
+		'%url'       => urlencode($absolute_url),
+		'%title'     => urlencode($title),
+		'%plaintext' => urlencode($plaintext),
+		'%fulltext'  => urlencode($fulltext),
+	);
+
+	// формирование итоговой таблицы
+	$vk_apiid = variable_get('ru_share_vk_apiid', '');
+	if ($like < 0) $like = variable_get("ru_share_like", 1) && $vk_apiid > 0;
+	$table_width = ($like ? 106 : 0) + count($shares) * 24;
+	$shares_table = "<table class='ru_share' cellspacing='0' cellpadding='0' style='width:${table_width}px'><tr>";
+	$images = url(drupal_get_path('module', 'ru_share') . '/img', array('absolute' => TRUE));
+	if ($like) {
+		if (!$likes) {
+			$shares_table = 
+				'<script type="text/javascript" src="http://userapi.com/js/api/openapi.js?20"></script>' .
+				'<script type="text/javascript">' .
+				"VK.init({apiId: $vk_apiid, onlyWidgets: true});" .
+				'</script>' . $shares_table;
+		}
+		$likes++;
+		$like_title = str_replace("'", "\\'", $title);
+		$like_description = str_replace("'", "\\'", $plaintext);
+		$shares_table .= '<td><div id="vk_like_' . $node->nid . '"></div>' .
+			'<script type="text/javascript">' .
+			"VK.Widgets.Like('vk_like_$node->nid', {type:'" . variable_get('ru_share_like_type', 'mini') . "', pageTitle:'$like_title', pageDescription:'$like_description', pageUrl:'$absolute_url'}, $node->nid);" .
+			'</script></td>';
+	}
+	foreach ($shares as $share) {
+		$share_url = strtr($share['link'], $shares_vars);
+		$shares_table .= "<td><a onclick='window.open(\"$share_url\",null,\"$share[size]\"); return false;' href='" . strtr($share['link'], $shares_vars) . "' title='$share[title]'><img src='$images/$share[icon]' alt='' /></a></td>";
+	}
+	$shares_table .= "</tr></table>";
+	return $shares_table;
+}
+
+function ru_share_menu() {
+	$items['admin/settings/ru_share'] = array(
+		'title' => 'Настройки ru_share',
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array('ru_share_settings'),
+		'access arguments' => array('administer site configuration'),
+		'type' => MENU_NORMAL_ITEM,
+	);
+	return $items;
+}
+
+function ru_share_settings() {
+	$types = node_get_types();
+	
+	$form['intro'] = array(
+		'#type' => 'markup',
+		'#value' => '<p>Выберите материалы у которых автоматически отображать ссылки «Поделиться».</p>',
+	);
+	foreach ($types as $type) {
+		$form['types']["ru_share_full_$type->type"] = array(
+			'#prefix' => "<strong>$type->name:</strong>",
+			'#type' => 'checkbox',
+			'#title' => 'в полном режиме',
+			'#default_value' => variable_get("ru_share_full_$type->type", 0),
+		);
+		$form['types']["ru_share_teaser_$type->type"] = array(
+			'#type' => 'checkbox',
+			'#title' => 'в режиме тизера',
+			'#default_value' => variable_get("ru_share_teaser_$type->type", 0),
+		);
+	}
+	$form['more'] = array(
+		'#type'  => 'markup',
+		'#value' => '<p>Можете также использовать функцию ru_share($node) для размещения ссылок в нужном месте шаблона.<br />Для использования CCK-поля в качестве текста следует использовать ru_share($node, $node->field_myfield[0][\'view\']).</p>',
+	);
+
+	$buttons = array('like' => 'Мне нравится (ВКонтакте)', 'lj' => 'LiveJournal', 'vk' => 'ВКонтакте', 'twitter' => 'Twitter', 'fb' => 'Facebook');
+	$first = TRUE;
+	foreach ($buttons as $button => $button_title) {
+		$form['buttons']["ru_share_$button"] = array(
+			'#prefix' => $first ? "<strong>Показывать сервисы:</strong>" : '',
+			'#type' => 'checkbox',
+			'#title' => $button_title,
+			'#default_value' => variable_get("ru_share_$button", 1),
+		);
+		$first = FALSE;
+	}
+
+	$form['buttons']['ru_share_like_type'] = array(
+		'#type' => 'select',
+		'#title' => 'Тип кнопки «Мне нравится»',
+		'#options' => array('full' => 'кнопка с текстовым счётчиком', 'button' => 'кнопка с миниатюрным счётчиком', 'mini' => 'миниатюрная кнопка', 'vertical' => 'миниатюрная кнопка, счётчик сверху'),
+		'#default_value' => variable_get('ru_share_like_type', 'mini'),
+	);
+
+	$form['buttons']['ru_share_vk_apiid'] = array(
+		'#type' => 'textfield',
+		'#title' => 'ВКонтакте API ID',
+		'#default_value' => variable_get('ru_share_vk_apiid', ''),
+	);
+
+	return system_settings_form($form);
+}

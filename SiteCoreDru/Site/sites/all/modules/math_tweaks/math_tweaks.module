@@ -1,0 +1,202 @@
+<?php
+
+function _d($message) {
+	if (user_access('access administration pages')) {
+		drupal_set_message('<pre>' . print_r($message, TRUE) . '</pre>');
+	}
+}
+
+function math_tweaks_menu() {
+	$items['front'] = array(
+		'title' => 'Главная страница',
+		'page callback' => '_math_tweaks_front_page',
+		'access arguments' => array('access content'),
+		'type' => MENU_CALLBACK,
+	);
+	return $items;
+}
+
+function _math_tweaks_front_page() {
+	return '';
+}
+
+function math_tweaks_form_alter(&$form, &$form_state, $form_id) {
+	if ($form['#id'] == 'node-form') {
+//		_d($form);
+		$form['revision_information']['#collapsed'] = 1;
+	}
+
+	if ($form_id == 'forum_node_form') {
+		unset($form['body_field']['teaser_js']);
+		unset($form['body_field']['teaser_include']);
+		//unset($form['buttons']);
+		if (arg(0) == 'node' && arg(1) == 'add' && arg(2) == 'forum') {
+			drupal_set_title('Начать новую тему');
+		}
+	}
+
+	if ($form_id == 'biblio_node_form') {
+		//_d($form);
+		unset($form['menu'], $form['comment_settings'], $form['buttons']['preview'], $form['revision_information'], $form['path']);
+		unset($form['biblio_doi_lookup'], $form['biblio_cut_paste']);
+	}
+
+	if ($form_id == 'anteroom_comment_form') {
+		if (isset($form['anteroom_comment_form']['comment_filter']['format']['format']['guidelines'])) {
+			unset($form['anteroom_comment_form']['comment_filter']['format']['format']['guidelines']);
+			unset($form['anteroom_comment_form']['comment_filter']['format'][2]);
+		}
+		//print '<pre>'; print_r($form['anteroom_comment_form']['comment_filter']['format']); print '</pre>';
+		//_d($form);
+	}
+}
+
+function _math_tweaks_last_action($tid) {
+	$action_nid = db_result(db_query("SELECT n.nid FROM node n JOIN term_node tn ON n.nid=tn.nid AND tn.tid=%d WHERE n.type='news' AND n.status='1' ORDER BY n.created DESC LIMIT 1", $tid));
+	if ($action_nid) {
+		$node = node_load($action_nid);
+		$content = node_view($node, FALSE, FALSE, FALSE);
+	}
+	return $content;
+}
+
+function _math_tweaks_list_actions($tid) {
+	$view = views_get_view('home');
+	return $view->execute_display('page_1', array($tid));
+}
+
+function math_tweaks_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL) {
+	// Расписание семинара "Компьютерное решение многомерных задач"
+	if ($node->nid == 564 && $op == 'view') {
+		$node->content['suffix'] = array(
+			'#type' => 'markup',
+			'#value' => _math_tweaks_list_actions(18),
+		);
+		drupal_set_title($node->title);
+	}
+
+	// Расписание городского семинара по комплексному анализу
+	if ($node->nid == 339 && $op == 'view') {
+		$node->content['suffix'] = array(
+			'#type' => 'markup',
+			'#value' => _math_tweaks_list_actions(16),
+		);
+		drupal_set_title($node->title);
+	}
+
+	// Расписание семинара «Обратные задачи»
+	if ($node->nid == 337 && $op == 'view') {
+		$node->content['suffix'] = array(
+			'#type' => 'markup',
+			'#value' => _math_tweaks_list_actions(17),
+		);
+		drupal_set_title($node->title);
+	}
+
+	// Расписание семинара «Неклассические логики»
+	if ($node->nid == 1301 && $op == 'view') {
+		$node->content['suffix'] = array(
+			'#type' => 'markup',
+			'#value' => _math_tweaks_list_actions(19),
+		);
+		drupal_set_title($node->title);
+	}
+
+	// Расписание семинара «Основы математической логики»
+	if ($node->nid == 1385 && $op == 'view') {
+		$node->content['suffix'] = array(
+			'#type' => 'markup',
+			'#value' => _math_tweaks_list_actions(21),
+		);
+		drupal_set_title($node->title);
+	}
+
+	
+	// Архив заседаний учёного совета
+	/*
+	if ($node->nid == 490 && $op == 'view') {
+		$node->content['suffix'] = array(
+			'#type' => 'markup',
+			'#value' => _math_tweaks_list_actions(15),
+		);
+		drupal_set_title($node->title);
+	}
+*/
+	/*
+	if ($node->nid == 379 && $op == 'view') {
+		$node->content['prefix'] = array(
+			'#type' => 'markup',
+			'#value' => '<h3>Ближайшее заседание Учёного совета Института математики</h3>' . _math_tweaks_last_action(15),
+			'#weight' => -10,
+		);
+	}
+	*/
+}
+
+/**
+ * Загружает публикации сотрудника с scholar.sfu-kras.ru и возвращает форматированный список публикаций.
+ * Показывает первые $split публикаций, остальные разворачиваются при клике
+ * (для этого сайт должен реализовать через JS .collapsed-block > .trigger + .collapsed-content).
+ * Кеширует загруженные публикации 1 час.
+ *
+ * @param string $email e-mail пользователя, откуда извлекается имя учётной записи СФУ
+ * @param int $split кол-во публикаций, которые отображаются сразу (остальные после клика)
+ *
+ * @return string HTML-код с форматированным списком публикаций
+ */
+function _sfu_structure_show_load_publications($email, $split = FALSE) {
+  // определяем имя учётной записи СФУ
+  $sfu_account = FALSE;
+  if (preg_match('/^([a-z0-9.-]+)@sfu-kras[.]ru$/i', $email, $matches)) {
+    $sfu_account = $matches[1];
+  }
+
+  // если не нашлась учётная запись СФУ, то выходим
+  if ($sfu_account == '') {
+    return '';
+  }
+
+  // загрузка из кеша
+  $cache = cache_get($cid = "scholar:$sfu_account:$split");
+  if ($cache && time() - $cache->created < 60 * 60) {
+    return $cache->data;
+  }
+
+  // шаблон HTML-кода для сворачиваемого списка
+  $split_template = urlencode("
+    %first
+    <div class='collapsed-block'>
+        <a href='#show' class='trigger'>Показать ещё публикации</a>
+        <div class='collapsed-content'>%rest</div>
+    </div>
+    ");
+
+  // получаем и форматируем конечный результат
+  $url = "http://scholar.sfu-kras.ru/author/$sfu_account?included=yes&min=2&stats=no&dbs=no&links=yes&split=$split&split_template=$split_template";
+  $pubs = @file_get_contents($url, FALSE, stream_context_create(array('http' => array('timeout' => 5))));
+  // если что-то успешно загрузилось
+  if ($pubs != '') {
+    // добавляем CSS-код
+    $result = "
+        <style type='text/css'>
+            .publication-authors a {color: inherit !important;}
+            .publication-authors a:hover {color: #ff6600 !important;}
+				.collapsed-block .collapsed-content {display: none;}
+        </style>
+        $pubs
+    ";
+  }
+  // если возникла ошибка, но в старом кеше что-то есть, то берём из кеша
+  elseif ($pubs === FALSE && $cache && $cache->data != '') {
+    $result = $cache->data;
+  }
+  else {
+    $result = '';
+  }
+
+  // сохранение в кеш (если не было ошибки) и возврат результата
+  if ($pubs !== FALSE) {
+    cache_set($cid, $result);
+  }
+  return $result;
+}
