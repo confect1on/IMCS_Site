@@ -1,0 +1,4 @@
+.ru_share {float: right;}
+.ru_share img {margin: 0 !important; padding: 2px !important; border: 1px solid white;}
+.ru_share a:hover img {border-color: #eb7405;}
+.ru_share td {padding-left: 6px;}

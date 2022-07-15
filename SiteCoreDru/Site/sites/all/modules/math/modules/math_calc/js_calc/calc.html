@@ -1,0 +1,29 @@
+<html>
+<head>
+   <title>js_calc</title>
+   <link rel='stylesheet' type='text/css' href='../js_cmd/cmd.css' />
+	<script src='../../../../../../../misc/jquery.js' type='text/javascript'></script>
+	<script src='../js_expression_evaluator/parser.js' type='text/javascript'></script>
+	<script src='../js_cmd/cmd.js' type='text/javascript'></script>
+	<script src='calc.js' type='text/javascript'></script>
+</head>
+
+<body>
+
+<input type='text' size='60' id='cmd' /> <input type='button' value='Calculate' id='cmd-button' />
+
+<div id="cmd-history">
+   <a href="#" id="cmd-clear-history">Clear history</a>
+</div>
+
+<script type='text/javascript'>
+$("#cmd").cmd({
+   handler: calc,
+   history: $("#cmd-history"),
+   clear_history: $("#cmd-clear-history"),
+   button: $("#cmd-button")
+});
+</script>
+
+</body>
+</html>

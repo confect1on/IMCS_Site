@@ -1,0 +1,69 @@
+<?php
+
+function math_wolfram_alpha_menu() {
+   $items['math/wolfram-alpha'] = array(
+       'title' => 'Wolfram|Alpha',
+       'page callback' => '_math_wolfram_alpha_page',
+       'access arguments' => array('access math services'),
+       'weight' => 30,
+   );
+   $items['math/wolfram-alpha/view'] = array(
+       'title' => 'View',
+       'type' => MENU_DEFAULT_LOCAL_TASK,
+       'weight' => 1,
+   );
+   $items['math/wolfram-alpha/help'] = array(
+       'title' => 'Help',
+       'page callback' => '_math_wolfram_alpha_help_page',
+       'access arguments' => array('access math services'),
+       'type' => MENU_LOCAL_TASK,
+       'weight' => 2,
+   );
+
+   // ajax
+   $items['math/wolfram-alpha/add-history'] = array(
+       'page callback' => '_math_calc_add_history',
+       'page arguments' => array('math_wolfram_alpha_history'),
+       'access arguments' => array('access math services'),
+       'type' => MENU_CALLBACK,
+   );
+   $items['math/wolfram-alpha/clear-history'] = array(
+       'page callback' => '_math_calc_clear_history',
+       'page arguments' => array('math_wolfram_alpha_history'),
+       'access arguments' => array('access math services'),
+       'type' => MENU_CALLBACK,
+   );
+
+   return $items;
+}
+
+function _math_wolfram_alpha_page() {
+   $path = drupal_get_path("module", "math_wolfram_alpha");
+   drupal_add_js("$path/math_wolfram_alpha.js");
+   drupal_add_css("$path/math_wolfram_alpha.css");
+   $GLOBALS['math_wolfram_alpha_build_form'] = true;
+   $output = drupal_get_form('math_calc_form', 'expression', 'Calculate', 'math_wolfram_alpha_history');
+   $GLOBALS['math_wolfram_alpha_build_form'] = false;
+   return $output;
+}
+
+function math_wolfram_alpha_form_alter(&$form, &$form_state, $form_id) {
+   if ($form_id == 'math_calc_form' && $GLOBALS['math_wolfram_alpha_build_form']) {
+      $form['cmd-history']['#prefix'] = "<br /><div class='math_wolfram_alpha_iframe'></div>";
+   }
+}
+
+function _math_wolfram_alpha_help_page() {
+   $output = "<p>" . t('<a href="http://www.wolframalpha.com/">Wolfram|Alpha</a> — online computational knowledge engine.') . "</p>";
+   $header = array(t("Example"), t("Description"));
+   $data[] = array('pi to 1000 digits', t('Pi with 1000 digits after comma'));
+   $data[] = array('plot x^2+y^2<1 and y>x', t('Plot a region'));
+   $data[] = array('plot x^2 + y^2', t('3D plot a function'));
+   $data[] = array('solve a x^2 + b x + c = 0 for x', t('Solve an equation with parameters'));
+   $data[] = array('y\'\' + y = 0', t('Solve an ordinary differential equation'));
+   $data[] = array('integrate sin x dx from x=0 to pi', t('Compute an integral'));
+   $data[] = array('derivative of x^4 sin x', t('Calculate a derivative'));
+   $output .= theme("table", $header, $data);
+   $output .= "<p>" . t('See also <a href="http://www.wolframalpha.com/examples/Math.html">other examples</a> on Wolfram|Alpha site.') . '</p>';
+   return $output;
+}

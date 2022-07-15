@@ -1,0 +1,5 @@
+name=math_plotter
+core=6.x
+package=math
+dependencies[]=math
+dependencies[]=math_calc

@@ -1,0 +1,9 @@
+<?php
+
+function cas_client_install() {
+	db_query("CREATE INDEX `uid` ON {authmap} (`uid`)");
+}
+
+function cas_client_uninstall() {
+	db_query("DROP INDEX `uid` ON {authmap}");
+}

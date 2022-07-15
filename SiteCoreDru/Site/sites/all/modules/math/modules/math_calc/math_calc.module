@@ -1,0 +1,149 @@
+<?php
+
+function math_calc_menu() {
+   $items['math/calc'] = array(
+       'title' => 'Calculator',
+       'page callback' => '_math_calc_page',
+       'access arguments' => array('access math services'),
+       'weight' => 10,
+   );
+   $items['math/calc/view'] = array(
+       'title' => 'View',
+       'type' => MENU_DEFAULT_LOCAL_TASK,
+       'weight' => 1,
+   );
+   $items['math/calc/help'] = array(
+       'title' => 'Help',
+       'page callback' => '_math_calc_help_page',
+       'access arguments' => array('access math services'),
+       'type' => MENU_LOCAL_TASK,
+       'weight' => 2,
+   );
+
+   // ajax
+   $items['math/calc/add-history'] = array(
+       'page callback' => '_math_calc_add_history',
+       'access arguments' => array('access math services'),
+       'type' => MENU_CALLBACK,
+   );
+   $items['math/calc/clear-history'] = array(
+       'page callback' => '_math_calc_clear_history',
+       'access arguments' => array('access math services'),
+       'type' => MENU_CALLBACK,
+   );
+
+   return $items;
+}
+
+function _math_calc_page() {
+   return drupal_get_form("math_calc_form");
+}
+
+function math_calc_form($form_state = NULL, $cmd_field_name = 'formula', $button_name = 'Calculate', $history_name = 'math_calc_history') {
+   $path = drupal_get_path("module", "math_calc");
+
+   drupal_add_js("$path/js_expression_evaluator/parser.js");
+   drupal_add_js("$path/js_cmd/cmd.js");
+   drupal_add_js("$path/js_calc/calc.js");
+   drupal_add_js("$path/math_calc.js");
+   
+   drupal_add_css("$path/js_cmd/cmd.css");
+   drupal_add_css("$path/math_calc.css");
+
+   $form[$cmd_field_name] = array(
+       '#type' => 'textfield'
+   );
+   $form['calculate'] = array(
+       '#type' => 'button',
+       '#value' => t($button_name),
+   );
+   $history = _math_calc_get_history($history_name);
+   $formulas = array();
+   foreach ($history as $formula) {
+      $formulas[] = '"' . str_replace('"', '\\"', $formula) . '"';
+   }
+   drupal_add_js("var cmd_history=new Array(" . implode(",", $formulas) . ");", 'inline');
+   $form['cmd-history'] = array(
+       '#type' => 'markup',
+       '#value' => '<div id="cmd-history"><a id="cmd-clear-history" href="#" title="' . t('Clear history'). '">—</a></div>',
+   );
+   if ($cmd_field_name == 'formula') {
+      $form['samples'] = array(
+         '#type' => 'markup',
+         '#value' => '<p>' . t('Examples') . ': sin(10)/(2^10)*sqrt(2), x=10, x^5/fac(5).</p>',
+      );
+   }
+   return $form;
+}
+
+function _math_calc_history_size($history_name = 'math_calc_history') {
+   return variable_get("${history_name}_size", 100);
+}
+
+function _math_calc_get_history($history_name = 'math_calc_history') {
+   global $user;
+   $history = $user->uid ? $user->{$history_name} : $_SESSION[$history_name];
+   if (!is_array($history)) $history = array();
+   return $history;
+}
+
+function _math_calc_set_history($history, $history_name = 'math_calc_history') {
+   global $user;
+   if ($user->uid) {
+      user_save($user, array($history_name => $history));
+   } else {
+      $_SESSION[$history_name] = $history;
+   }
+}
+
+function _math_calc_add_history($history_name = 'math_calc_history') {
+   $formula = trim($_GET['input']);
+   if ($formula != '') {
+      $history = _math_calc_get_history($history_name);
+      $history[] = $formula;
+      if (count($history) > _math_calc_history_size($history_name)) {
+         array_shift($history);
+      }
+      _math_calc_set_history($history, $history_name);
+   }
+}
+
+function _math_calc_clear_history($history_name = 'math_calc_history') {
+   _math_calc_set_history(array(), $history_name);
+}
+
+function _math_calc_help_page() {
+   $header = array(t("Operator / Function"), t("Description"));
+   $data[] = array("^", t("Exponentiation"));
+   $data[] = array("*", t("Multiplication"));
+   $data[] = array("/", t("Division"));
+   $data[] = array("%", t("Remainder"));
+   $data[] = array("+", t("Addition"));
+   $data[] = array("-", t("Subtraction"));
+//   $data[] = array("||", t("Concatenation"));
+
+   $data[] = array("x=y", t("Assign value to variable x"));
+
+   $data[] = array('sin(x)', t('Sine of x (x is in radians)'));
+   $data[] = array('cos(x)', t('Cosine of x'));
+   $data[] = array('tan(x)', t('Tangent of x'));
+   $data[] = array('asin(x)', t('Arc sine of x (in radians)'));
+   $data[] = array('acos(x)', t('Arc cosine of x'));
+   $data[] = array('atan(x)', t('Arc tangent of x'));
+   $data[] = array('sqrt(x)', t('Square root of x'));
+   $data[] = array('log(x)', t('Natural logarithm of x'));
+   $data[] = array('abs(x)', t('Absolute value (magnitude) of x'));
+   $data[] = array('ceil(x)', t('Ceiling of x — the smallest integer that\'s >= x'));
+   $data[] = array('floor(x)', t('Floor of x — the largest integer that\'s <= x'));
+   $data[] = array('round(x)', t('x, rounded to the nearest integer'));
+   $data[] = array('exp(x)', t('e^x (exponential function with base e)'));
+   $data[] = array('random(n)', t('Random number in the range [0, n)'));
+   $data[] = array('fac(n)', t('n! (factorial of n)'));
+   $data[] = array('min(a,b,c,d,...)', t('Get the smallest ("minimum") number in the list'));
+   $data[] = array('max(a,b,c,d,...)', t('Get the largest ("maximum") number in the list'));
+   //$data[] = array('pyt(a, b)', t('Pythagorean function, i.e. the c in "c^2 = a^2 + b^2"'));
+   $data[] = array('pow(x, y)', t('This is exactly the same as "x^y"'));
+   $data[] = array('atan2(y, x)', t('Arc tangent of x/y, i.e. the angle between (0, 0) and (x, y) in radians'));
+   $output .= theme("table", $header, $data);
+   return $output;
+}

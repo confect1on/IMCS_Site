@@ -1,0 +1,4 @@
+name=math_calc
+core=6.x
+package=math
+dependencies[]=math

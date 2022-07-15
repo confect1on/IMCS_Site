@@ -1,0 +1,217 @@
+<?php
+
+/*
+* фильтр для поддержки tex
+* протестить в разных браузерах, под разными юзерами
+*/
+
+include('tasks.api.inc');
+
+function tasks_init() {
+	drupal_add_css(drupal_get_path('module', 'tasks') .'/tasks.css');
+	drupal_add_js(drupal_get_path('module', 'tasks') .'/tasks.js');
+}
+
+function tasks_perm() {
+	return array('tasks solve', 'tasks admin');
+}
+
+function tasks_menu() {
+	$items = array();
+	$items['tasks'] = array(
+		'title' => 'Математические задачи', 
+		'page callback' => '_tasks_unsolved_page', 
+		'access arguments' => array('access content'), 
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'tasks.inc',
+	);
+	$items['tasks/unsolved'] = array(
+		'title' => 'Нерешённые',
+		'type' => MENU_DEFAULT_LOCAL_TASK,
+		'weight' => 0
+	);
+	$items['tasks/solved'] = array(
+		'title' => 'Решённые',
+		'page callback' => '_tasks_solved_page',
+		'access arguments' => array('tasks solve'),
+		'weight' => 1,
+		'type' => MENU_LOCAL_TASK,
+		'file' => 'tasks.inc',
+	);
+	$items['tasks/my'] = array(
+		'title' => 'Мои',
+		'page callback' => '_tasks_my_page',
+		'access callback' => 'node_access',
+		'access arguments' => array('create', 'task'),
+		'weight' => 2,
+		'type' => MENU_LOCAL_TASK,
+		'file' => 'tasks.inc',
+	);
+	$items['tasks/unpublished'] = array(
+		'title' => 'Неопубликованные',
+		'page callback' => '_tasks_unpublished_page',
+		'access arguments' => array('tasks admin'),
+		'weight' => 3,
+		'type' => MENU_LOCAL_TASK,
+		'file' => 'tasks.inc',
+	);
+	$items['tasks/rating'] = array(
+		'title' => 'Рейтинг', 
+		'page callback' => '_tasks_rating_page', 
+		'access arguments' => array('access content'), 
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'tasks.rating.inc',
+	);
+	$items['tasks/admin'] = array(
+		'title' => 'Администрирование',
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array('tasks_admin_form'),
+		'access arguments' => array('tasks admin'),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'tasks.admin.inc',
+	);
+	return $items;
+}
+
+function tasks_nodeapi(&$node, $op, $teaser = NULL, $page = NULL) {
+	if ($node->type != 'task') return;
+
+	// автоназначение номера
+	if ($op == 'presave' && empty($node->field_task_number[0]['value']) && $node->status) {
+		$node->field_task_number[0]['value'] = db_result(db_query("SELECT MAX(field_task_number_value) FROM content_type_task")) + 1;
+	}
+
+	// автоназначение алиаса task/номер
+	if ($op == 'presave' && !empty($node->field_task_number[0]['value'])) {
+		$node->path = "task/" . $node->field_task_number[0]['value'];
+	}
+
+	if ($op == 'presave') {
+		$old_node = node_load($node->nid);
+		// удаляем начальные и концевые пробелы в верном решении
+		$node->field_task_solution[0]['value'] = trim($node->field_task_solution[0]['value']);
+		// изменились баллы - перерасчёт
+		if ($node->nid && $old_node->field_task_score[0]['value'] != $node->field_task_score[0]['value']) {
+			tasks_update_score($node);
+			drupal_set_message('Баллы за задачу пересчитаны.', 'warning');
+		}
+		// изменился правильный ответ - удаление баллов
+		if ($node->nid && $old_node->field_task_solution[0]['value'] != $node->field_task_solution[0]['value']) {
+			tasks_remove($node);
+			drupal_set_message('Баллы за задачу обнулены.', 'warning');
+		}
+	}
+
+	// удаление сведений о задаче и вычитание баллов
+	if ($op == 'delete') {
+		tasks_remove($node);
+		drupal_set_message('Баллы за задачу обнулены.', 'warning');
+	}
+
+	// вывод номера в заголовке задачи
+	if ($op == 'view') {
+		$number = $node->field_task_number[0]['value'];
+		if ($number != '') {
+			$node->title = _tasks_title($node);
+			if ($page) drupal_set_title(check_plain($node->title));
+		}
+	}
+
+	// запрет редактирования опубликованных задач не админами
+	if ($op == 'validate' && $node->status && !user_access('tasks admin')) {
+		form_set_error('field_task', 'Задача уже опубликована, поэтому вы не можете её изменять.');
+	}
+
+	// оповещение админов о новой задаче
+	if ($op == 'insert' && !user_access('tasks admin')) {
+		_tasks_notify_admins($node);
+	}
+}
+
+// подключение шаблона вывода задачи из модуля
+function tasks_theme_registry_alter(&$theme_registry) {
+	$theme_registry['node']['theme paths'][] = drupal_get_path('module', 'tasks');
+}
+
+function tasks_form_alter(&$form, &$form_state, $form_id) {
+	// скрытие номера задачи при добавлении задачи
+	if ($form_id == 'task_node_form') {
+		if (empty($form['nid']['#value'])) {
+			unset($form['field_task_number']);
+		}
+	}
+}
+
+// форма ответа
+
+function tasks_attempt_form($form_state, $node) {
+	$form['answer'] = array(
+		'#type' => 'textfield',
+		'#title' => 'Ваш ответ',
+		'#size' => 60,
+	);
+	$form['submit'] = array(
+		'#type' => 'submit',
+		'#value' => 'Отправить ответ',
+	);
+	$form['task_nid'] = array(
+		'#type' => 'value',
+		'#value' => $node->nid,
+	);
+	return $form;
+}
+
+function tasks_attempt_form_submit($form, &$form_state) {
+	$task = node_load($form_state['values']['task_nid']);
+	if (!$task || !tasks_can_attempt($task)) drupal_access_denied();
+	$answer = trim($form_state['values']['answer']);
+	if ($answer == '') return;
+	if (tasks_has_attempt($task, $answer)) {
+		drupal_set_message('Вы уже давали такой ответ и он неверен. Попытка не засчитана.', 'warning');
+		return;
+	}
+	if (tasks_attempt($task, $answer)) {
+		drupal_set_message('Вы верно решили задачу.');
+	}
+	else {
+		drupal_set_message('Вы неверно решили задачу.', 'error');
+	}
+}
+
+// блок
+
+function tasks_block($op = 'list', $delta = 0, $edit = array()) {
+	if ($op == 'list') {
+		$blocks[0] = array('info' => 'Задачи', 'cache' => BLOCK_CACHE_PER_USER);
+		return $blocks;
+	}
+	else if ($op == 'configure' && $delta == 0) {
+		$form['tasks_number'] = array(
+			'#type' => 'select', 
+			'#title' => 'Количество задач',
+			'#default_value' => variable_get('tasks_block_number', '5'), 
+			'#options' => array(1 => '1', 2 => '2', 3 => '3', 4 => '4', 5 => '5', 6 => '6', 7 => '7', 8 => '8', 9 => '9', 10 => '10'),
+		);
+		return $form;
+	}
+	else if ($op == 'save' && $delta == 0) {
+		variable_set('tasks_block_number', $edit['tasks_number']);
+	}
+	else if ($op == 'view') {
+		switch ($delta) {
+			case 0:
+				require_once('tasks.inc');
+				$tasks = db_query(_tasks_list(TASKS_UNSOLVED, NULL, TRUE) . " LIMIT " . variable_get('tasks_block_number', '5'));
+				while($task = db_fetch_object($tasks)) {
+					$task = node_load($task->nid);
+					$output .= "<li>" . l(_tasks_title($task), "node/$task->nid") . "</li>";
+				}
+				$block = array(
+					'subject' => 'Задачи', 
+					'content' => $output == '' ? '' : "<ul>$output</ul><div class='more-link'><a href='/tasks'>Все задачи</a></div>",
+				);
+				break;
+		}
+		return $block;
+	}
+}

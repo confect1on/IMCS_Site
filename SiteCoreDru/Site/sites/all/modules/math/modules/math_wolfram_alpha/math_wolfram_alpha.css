@@ -1,0 +1,14 @@
+#edit-expression-wrapper {
+   display: inline;
+}
+
+.math_wolfram_alpha_iframe {
+   xfloat: left;
+   margin-top: 0.5em;
+}
+
+.cmd-history-right {
+   xwidth: 170px;
+   xfloat: left;
+   xmargin-left: 0.5em;
+}
